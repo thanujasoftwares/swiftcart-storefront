@@ -1,7 +1,15 @@
 var express = require('express');
 var path = require('path');
 var cors = require('cors');
+const commandLineArgs = require('command-line-args');
+const optionDefinitions = [
+    { name: 'port', alias: 'p', type: Number,defaultOption: 3000 }
+  ]
+const options = commandLineArgs(optionDefinitions);
 
+if(!options){
+    options.port = 3000;
+}
 
 var bodyParser = require('body-parser');
 var routes = require('./routes/index.js');
@@ -13,7 +21,7 @@ app.set('view engine', 'ejs');
 
 /* CORS */
 app.use(function(req, res, next) {
-    var allowedOrigins = ['http://127.0.0.1:4200', 'http://localhost:4200', 'http://127.0.0.1:4200', 'http://localhost:4200'];
+    var allowedOrigins = ['http://127.0.0.1:4200', 'http://localhost:4200', 'http://127.0.0.1:4200', 'http://localhost:4200','http://www.hsshopie.com','http://www.fashionlegendary.com'];
     var origin = req.headers.origin;
     if(allowedOrigins.indexOf(origin) > -1){
          res.setHeader('Access-Control-Allow-Origin', origin);
@@ -46,5 +54,5 @@ app.use('/admin',express.static(path.join(__dirname, 'views','admin')));
 app.use('/uploads',express.static(path.join(__dirname, 'uploads')));
 
 
-
-app.listen(3000);
+console.log("Launching Port Number: "+options.port);
+app.listen(options.port);
