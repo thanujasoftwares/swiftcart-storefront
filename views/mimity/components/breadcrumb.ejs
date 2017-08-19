@@ -1,0 +1,14 @@
+<!-- Breadcrumbs -->
+<div class="breadcrumb-container">
+<div class="container">
+    <ol class="breadcrumb">
+    <% navPath.forEach(function(path){ %>
+        <% if(path.active == true) { %>
+            <li active><%= path.title %></li>
+        <% } else { %>
+            <li><a href='<%= path.url %>'><%= path.title %></a></li>
+    <% } }) %>
+    </ol>
+</div>
+</div>
+<!-- End Breadcrumbs -->

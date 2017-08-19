@@ -1,0 +1,10 @@
+'use strict';
+var _ = require('lodash');
+var router = require('express').Router();
+var customer = require('./customer');
+var admin = require('./admin');
+var api = require('./api');
+router.use('/', customer);
+router.use('/admin', admin);
+router.use('/api', api);
+module.exports = router;

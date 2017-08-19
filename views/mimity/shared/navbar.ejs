@@ -1,0 +1,43 @@
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-default shadow-navbar" role="navigation">
+        <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-ex1-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a href="cart.html" class="btn btn-default btn-cart-xs visible-xs pull-right">
+                <i class="fa fa-shopping-cart"></i> Cart : 4
+              </a>
+              <a href="wishlist.html" class="btn btn-default btn-cart-xs visible-xs pull-right">
+                <i class="fa fa-heart"></i> Wishlist : 3
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar-ex1-collapse">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="/">Home</a></li>
+                <% navigation.menu.forEach(function(menu){ %>
+                  <% if(menu.groupitems.length > 0) { %>
+                  <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        <%= menu.group %> <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <% menu.groupitems.forEach(function(groupitems){ %>
+                        <li><a href='/<%= menu.group %>/<%= groupitems.category%>.html'><%= groupitems.category %></a></li>
+                      <% }) %>
+                    </ul>
+                  </li>
+                  <% } %>
+                <% }); %>  
+              </ul>
+              <ul class="nav navbar-nav navbar-right navbar-feature visible-lg">
+                  <li><a href="cart.html">Shopping Cart</a></li>
+                  <li><a href="checkout.html">Checkout</a></li>
+                </ul>
+            </div>
+        </div>
+      </nav>
+      <!-- End Navigation Bar -->

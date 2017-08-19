@@ -1,0 +1,26 @@
+{
+  "development": {
+    "username": "swiftcart",
+    "password": "swiftcart",
+    "database": "swiftcart",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "swiftcart",
+    "password": "swiftcart",
+    "database": "swiftcart",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "swiftcart",
+    "password": "swiftcart",
+    "database": "swiftcart",
+    "host": "127.0.0.1",
+    "port": "5432",
+    "dialect": "postgres"
+  }
+}

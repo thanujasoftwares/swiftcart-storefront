@@ -1,0 +1,84 @@
+1. Menu
+    1a. Category
+    2b. Sub Category
+
+2. Product
+    2a. Id (SKU)
+    2b. Name
+    2c. Category
+    2d. Sub Category
+
+3. Product Catalog (to store information such as images, videos, descriptions)
+    3a. Product Id
+    3b. Product Catalog Id
+    3c. type
+    3d. link
+
+4. Product Recommendations 
+    4a. Product Id
+    4b. Product Id
+
+5. Product Ratings
+    5a. Product Id
+    5b. Scale1
+    5c. Scale2
+    5d. Scale3
+    5e. Scale4
+    5f. Scale5
+
+6. Product Reviews
+    6a. Product Id
+    6b. Review Id
+    6c. Customer Name
+    6d. Customer Review
+
+7. Order
+    7a. Order Id
+    7b. External Order Id
+    7c. Customer Id
+    7d. Order Status
+    7e. Shipping_Address_Id
+    7f. Billing_Address_Id
+    7g. Payment Type
+    7h. Special Instructions
+
+8. Order Items
+    8a. Order Item Id
+    8b. Order Id
+    8c. Product Id
+    8d. Quantity
+    8f. Unit Price
+    8g. Tax
+    8h. Discount
+    8i. Discount Code
+    8j. Override Unit Price
+    8k. Override Reason
+    8l. Order Item Status
+
+9. Customer
+    9a. Customer Id
+    9b. Customer Name
+    9c. Customer Email Address
+
+10. Customer Address Book
+    10a. Address Id
+    10b. Custmomer Id
+    10c. Address Line 1
+    10d. Address Line 2
+    10e. Street
+    10f. City
+    10g. State
+    10i. Country
+    10j. Postal Code
+    10k. Phone number
+
+11. Shipping Item
+    11a. Shipping Id
+    11b. Order Item Id
+    11d. Carieer
+    11e. Shipping Tracking Code
+
+12. Shopping Cart
+    12a. Session Id
+    12b. Cart Id
+    

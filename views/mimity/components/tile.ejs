@@ -1,0 +1,48 @@
+<div class='<%= tileClass %> box-product-outer'>
+    <div class="box-product">
+        <div class="img-wrapper">
+            <a style="min-height:240px;vertical-align:middle" href='/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html'>
+                <% if (product.imagepath){ %>
+                <img  alt="<%= product.name %>" src='<%= product.imagepath %><%= product.lg %>'>
+                <% } else { %>
+                <img  alt="<%= product.name %>" src='images/demo/polo1.jpg'>
+                <% }%>
+            </a>
+            <div class="tags">
+                <% if(product.isfeatured) { %>
+                    <span class="label-tags"><span class="label label-success arrowed">Featured</span></span>
+                <% }  if(product.isnew) { %>
+                    <span class="label-tags"><span class="label label-warning arrowed">New</span></span>
+                <% }  if(product.isbestseller) { %>
+                    <span class="label-tags"><span class="label label-primary arrowed">Bestseller</span></span>
+                <% }  %>
+            </div>
+            <div class="tags tags-left">
+                <% if(product.isdeal) { %>
+                    <span class="label-tags"><span class="label label-danger arrowed-right">Deal</span></span>
+                <% }  if(product.issale) { %>
+                    <span class="label-tags"><span class="label label-success arrowed-right">Sale</span></span>
+                <% }  %>
+                <span class="label-tags"><span class="label label-primary arrowed-right"><%= product.agegrouptitle %></span></span>
+            </div>
+            <div class="option">
+                <a href="#" data-toggle="tooltip" title="Add to Cart"><i class="fa fa-shopping-cart"></i>&nbsp;</a>
+                <!-- <a href="#" data-toggle="tooltip" title="Add to Compare"><i class="fa fa-align-left"></i></a>
+                <a href="#" data-toggle="tooltip" title="Add to Wishlist" class="wishlist"><i class="fa fa-heart"></i></a> -->
+            </div>
+        </div>
+        <h6><a href="detail.html"><%= product.name %></a></h6>
+        <div class="price">
+        <div><%= product.unitprice - (product.unitprice*product.discount/100) %><span class="label-tags"><span class="label label-default">-<%= product.discount %>%</span></span></div>
+        <span class="price-old"><%= product.unitprice %></span>
+        </div>
+        <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+            <a href="#">(5 reviews)</a>
+        </div>
+    </div>
+</div>

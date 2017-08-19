@@ -1,0 +1,39 @@
+<div class='<%= tileClass %> box-product-outer'>
+    <div class="box-product">
+        <div class="img-wrapper">
+            <a style="min-height:240px;vertical-align:middle" href='/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html'>
+                <% if (product.ProductImages && product.ProductImages.length>0){ %>
+                <img  alt="<%= product.name %>" src='<%= product.ProductImages[0].path %><%= product.ProductImages[0].lg %>'>
+                <% } else { %>
+                <img  alt="<%= product.name %>" src='images/demo/polo1.jpg'>
+                <% }%>
+            </a>
+            <div class="tags">
+                <% if(product.isfeatured) { %>
+                    <span class="label-tags"><span class="label label-success arrowed">Featured</span></span>
+                <% } %>
+            </div>
+            <div class="tags tags-left">
+                <span class="label-tags"><span class="label label-danger arrowed-right">Sale</span></span>
+            </div>
+            <div class="option">
+                <a href="#" data-toggle="tooltip" title="Add to Cart"><i class="fa fa-shopping-cart"></i>&nbsp;<small>Add to cart</small></a>
+                <!-- <a href="#" data-toggle="tooltip" title="Add to Compare"><i class="fa fa-align-left"></i></a>
+                <a href="#" data-toggle="tooltip" title="Add to Wishlist" class="wishlist"><i class="fa fa-heart"></i></a> -->
+            </div>
+        </div>
+        <h6><a href="detail.html"><%= product.name %></a></h6>
+        <div class="price">
+        <div>$13.50 <span class="label-tags"><span class="label label-default">-10%</span></span></div>
+        <span class="price-old">$15.00</span>
+        </div>
+        <div class="rating">
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star"></i>
+            <i class="fa fa-star-half-o"></i>
+            <a href="#">(5 reviews)</a>
+        </div>
+    </div>
+</div>
