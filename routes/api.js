@@ -26,7 +26,7 @@ var upload = multer({
 
 
 //var {Menus} = require('../models');
-var {ProductController, MenuController, InventoryController} = require('../controllers');
+var {ProductController, MenuController, InventoryController, OrderController} = require('../controllers');
 router.route('/welcome')
 .get(function(req,res){
     res.status(200).json({'message':'hi'});
@@ -217,6 +217,7 @@ router.route('/products/:id/images')
                 var path = file.path.slice(0,file.path.lastIndexOf('.'));
                 var ext = file.path.slice(file.path.lastIndexOf('.'));
                 images.push({
+                    InventoryId:0,
                     ProdutId:req.params.id,
                     type:file.mimetype,
                     path:'http://localhost:3000/',
@@ -308,6 +309,12 @@ router.route('/products/:id/inventory/:inventoryid/images')
         });
     })
 });
+
+router.route('/cart')
+.post((req,res)=>{
+    //OrderController
+});
+
 
 /*
 router.route('/:tablename/:id?')

@@ -28,6 +28,21 @@ var ProductController = {
                     case 'isdeleted':
                         prod.isdeleted = value;
                     break;
+                    case 'issale':
+                        prod.issale = value;
+                    break;
+                    case 'isbestseller':
+                        prod.isbestseller = value;
+                    break;
+                    case 'isdeal':
+                        prod.isdeal = value;
+                    break;
+                    case 'ishot':
+                        prod.ishot = value;
+                    break;
+                    case 'sku':
+                        prod.sku = value;
+                    break;
                     case 'isfeatured':
                         prod.isfeatured = value;
                     break;
@@ -273,25 +288,25 @@ var ProductController = {
             select distinct
             "Products"."id","Products"."name","Products"."category","Products"."subcategory","Products"."agegroup" ,"Products"."gender",
             ("Ratings"."star1"+"Ratings"."star1"+"Ratings"."star2"+"Ratings"."star3"+"Ratings"."star4"+"Ratings"."star5")/5 as "star",
-            "Inventories"."sku" as "sku",
-            "Inventories"."isfeatured" as "isfeatured",
-            "Inventories"."isnew" as "isnew",
-            "Inventories"."isdeal" as "isdeal",
-            "Inventories"."issale" as "issale",
-            "Inventories"."isbestseller" as "isbestseller",
-            "Inventories"."unitprice" as "unitprice",
-            "Inventories"."discount" as "discount",
-            max("Inventories.ProductImages"."path") over (partition by "Inventories"."ProductId", "Inventories"."sku") as "imagepath",
-            max("Inventories.ProductImages"."sm") over (partition by "Inventories"."ProductId", "Inventories"."sku") as "sm",
-            max("Inventories.ProductImages"."md") over (partition by "Inventories"."ProductId", "Inventories"."sku") as "md",
-            max("Inventories.ProductImages"."xl") over (partition by "Inventories"."ProductId", "Inventories"."sku") as "xl",
-            max("Inventories.ProductImages"."lg") over (partition by "Inventories"."ProductId", "Inventories"."sku") as "lg",
-            max("Inventories.ProductImages"."xxl") over (partition by "Inventories"."ProductId", "Inventories"."sku") as "xxl"
+            "Products"."sku" as "sku",
+            "Products"."isfeatured" as "isfeatured",
+            "Products"."isnew" as "isnew",
+            "Products"."isdeal" as "isdeal",
+            "Products"."issale" as "issale",
+            "Products"."isbestseller" as "isbestseller",
+            min("Inventories"."unitprice") over (partition by "Inventories"."ProductId")  as "unitprice",
+            min("Inventories"."discount") over (partition by "Inventories"."ProductId") as "discount",
+            max("Products.ProductImages"."path") over (partition by "Products.ProductImages"."ProductId") as "imagepath",
+            max("Products.ProductImages"."sm") over (partition by "Products.ProductImages"."ProductId") as "sm",
+            max("Products.ProductImages"."md") over (partition by "Products.ProductImages"."ProductId") as "md",
+            max("Products.ProductImages"."xl") over (partition by "Products.ProductImages"."ProductId") as "xl",
+            max("Products.ProductImages"."lg") over (partition by "Products.ProductImages"."ProductId") as "lg",
+            max("Products.ProductImages"."xxl") over (partition by "Products.ProductImages"."ProductId") as "xxl"
         from "Products" 
         left join "Ratings" as "Ratings" on "Products"."id" = "Ratings"."ProductId"
         left join "Inventories" as "Inventories" on "Products"."id" = "Inventories"."ProductId"
-        left join "ProductImages" as "Inventories.ProductImages" on "Inventories.ProductImages"."InventoryId" = "Inventories"."id"  and "Inventories.ProductImages"."ProductId" = "Products"."id"
-        where "Products"."isdeleted" is false and "Inventories"."sku" is not null and "Inventories"."size" is not null and ("Inventories"."instock"-"Inventories"."reserved")>0
+        left join "ProductImages" as "Products.ProductImages" on  "Products.ProductImages"."ProductId" = "Products"."id"
+        where "Products"."isdeleted" = false and "Products"."sku" is not null and "Inventories"."size" is not null and ("Inventories"."instock"-"Inventories"."reserved")>0
             `
 
             sql = sql +" and "+where;

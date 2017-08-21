@@ -2,7 +2,7 @@
 <html lang="en">
   <%- include('shared/head') %>
   <body class="fade-down">
-    <%- include('shared/topbar') %>
+    <%- /*include('shared/topbar')*/ %>
     <%- include('shared/searchbar',{navigation:navigation}) %>
     <%- include('shared/navbar',{navigation:navigation}) %>
     <%- include('components/breadcrumb',{navPath:navPath}) %>
@@ -11,7 +11,7 @@
     <div class="container m-t-3">
       <div class="row">
         <!-- Filter Sidebar -->
-        <div class="col-sm-3 hidden-xs">
+        <!-- <div class="col-sm-3 hidden-xs">
           <div class="filter-sidebar">
             <div class="title"><span>Enabled Filters</span></div>
             <ul>
@@ -79,15 +79,15 @@
             <label class="checkbox-inline"><input type="checkbox"><span> L (13)</span></label>
             <label class="checkbox-inline"><input type="checkbox"><span> XL (14)</span></label>
           </div>
-        </div>
+        </div> -->
         <!-- End Filter Sidebar -->
 
         <!-- Product List -->
-        <div class="col-sm-9">
+        <div class="col-sm-12">
           <div class="title"><span><%= pageTitle %></span></div>
 
           <!-- Product Sorting Bar -->
-          <div class="product-sorting-bar">
+          <!-- <div class="product-sorting-bar">
             <div>Sort By
               <select name="sortby" class="selectpicker" data-width="180px">
                 <option value="recomended">Recomended</option>
@@ -102,7 +102,7 @@
                 <option value="16">16</option>
               </select> per page
             </div>
-          </div>
+          </div> -->
           <!-- End Product Sorting Bar -->
           <%
             products.forEach(function(product){
@@ -114,7 +114,7 @@
             })
           %>
           <%-
-            include('components/pagination')
+            /* include('components/pagination') */
           %>
         </div>
         <!-- End Product List -->

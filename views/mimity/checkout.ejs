@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+  
+          <!-- Checkout Form -->
+          <div class="col-md-9">
+            <div class="title"><span>Checkout</span></div>
+            <form>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label for="firstNameInput">First Name (*)</label>
+                  <input type="text" class="form-control" id="firstNameInput" placeholder="First Name" required data-cart-attribute='fname'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="lastNameInput">Last Name</label>
+                  <input type="text" class="form-control" id="lastNameInput" placeholder="Last Name" required data-cart-attribute='lname'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="emailInput">Email Address (*)</label>
+                  <input type="email" class="form-control" id="emailInput" placeholder="Email Address" required data-cart-attribute='eaddr'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="phoneInput">Phone Number (*)</label>
+                  <input type="text" class="form-control" id="phoneInput" placeholder="Phone Number" required data-cart-attribute='pno'>
+                </div>
+                <div class="form-group col-sm-12">
+                  <label for="addressInput">Address (*)</label>
+                  <input type="text" class="form-control" id="phoneInput" placeholder="Address Line 1" required data-cart-attribute='adrl1'>
+                  <br />
+                  <input type="text" class="form-control" id="phoneInput" placeholder="Address Line 2 (optional)" data-cart-attribute='adrl2'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="cityInput">City (*)</label>
+                  <input type="text" class="form-control" id="cityInput" placeholder="City" required data-cart-attribute='adrcty'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="regionInput">Region / State (*)</label>
+                  <select class="form-control selectpicker" id="regionInput" data-live-search="true" data-dropup-auto="false" data-cart-attribute='adrst'>
+                    <option value=""> --- Please Select --- </option>
+                    <% states.forEach(function(st){ %>
+                      <option value='<%= st.key %>'><%= st.name %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="postInput">Post Code (*)</label>
+                  <input type="text" class="form-control" id="postInput" placeholder="Post Code" required data-cart-attribute='adrpst'>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="postInput">Payment Type (*)</label>
+                    <select class="form-control selectpicker" id="regionInput" data-live-search="true" data-dropup-auto="false" data-cart-attribute='paytype'>
+                        <% paytypes.forEach(function(st){ %>
+                          <option value='<%= st.key %>'><%= st.name %></option>
+                        <% }) %>                      
+                    </select>
+                    </div>
+                <!-- <div class="form-group col-sm-12">
+                  <label for="notesInput">Notes</label>
+                  <textarea class="form-control" rows="3" id="notesInput"></textarea>
+                </div> -->
+              </div>
+              <div class="table-responsive">
+                  <table class="table table-bordered table-cart">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Title</th>
+                          <th>Size</th>
+                          <th>Quantity</th>
+                          <th>Unit price</th>
+                          <th>SubTotal</th>
+                        </tr>
+                      </thead>
+                      <tbody id="shop-chkout-table-rows">
+                      </tbody>
+                      <tr>
+                          <td colspan="4" class="text-right">Sub total</td>
+                          <td colspan="2"><b id="shop-cart-table-st">0.00</b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">GST</td>
+                          <td colspan="2"><b id="shop-cart-table-gst">0.00</b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">Shipping Charges</td>
+                          <td colspan="2"><b id="shop-cart-table-dc">0.00</b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">Total</td>
+                          <td colspan="2"><b id="shop-cart-table-tt">0.00</b></td>
+                      </tr>                
+                    </table>
+              </div>
+              <nav aria-label="Checkout Next Navigation">
+                <ul class="pager">
+                  <li class="previous"><a href="/cart.html"><span aria-hidden="true">&larr;</span> Back to Shopping Cart</a></li>
+                  <li class="next"><a href="javascript:checkout()">Confirm Order <span aria-hidden="true">&rarr;</span></a></li>
+                </ul>
+              </nav>
+            </form>
+          </div>
+          <!-- End Checkout Form -->
+        </div>  
+    </div> 
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+  </body>
+</html>

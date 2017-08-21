@@ -16,6 +16,10 @@ var OrderAddressBook = sequelize.define('OrderAddressBooks',
         CustomerId: {
             allowNull: false,
             type: DataTypes.INTEGER
+        },        
+        CustomerAddressBookId: {
+            allowNull: false,
+            type: DataTypes.INTEGER
         },
         type: {
             allowNull: false,

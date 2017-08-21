@@ -21,14 +21,14 @@ var Product = sequelize.define('Products',
             allowNull: false,
             type: DataTypes.STRING,
             validate: {
-                is: ["^[a-zA-Z0-9 \- \#]+$", 'i']
+                notEmpty: true,
             }
         },
         subcategory:{
             allowNull: false,
             type: DataTypes.STRING,
             validate: {
-                is: ["^[a-zA-Z0-9 \- \#]+$", 'i']
+                notEmpty: true,
             }
         },
         VendorId:{
@@ -49,7 +49,11 @@ var Product = sequelize.define('Products',
         materialtype:{
             allowNull: false,
             type: DataTypes.STRING,
-        },        
+        }, 
+        sku: {
+            type:DataTypes.TEXT,
+            allowNull: true
+        }, 
         isfeatured:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,
@@ -59,7 +63,27 @@ var Product = sequelize.define('Products',
             allowNull: true,  
             type: DataTypes.BOOLEAN,
             defaultValue: true
-        },        
+        },    
+        issale:{
+            allowNull: true,  
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
+        },
+        isbestseller:{
+            allowNull: true,  
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
+        },
+        isdeal:{
+            allowNull: true,  
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
+        },
+        ishot:{
+            allowNull: true,  
+            type: DataTypes.BOOLEAN,
+            defaultValue: true
+        },            
         isdeleted:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,

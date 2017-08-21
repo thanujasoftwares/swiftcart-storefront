@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+        
+    <div class="container m-t-3">
+        <div class="row">
+  
+          <!-- Shopping Cart List -->
+          <div class="col-md-9">
+            <div class="title"><span>My Shopping Cart</span></div>
+            <div class="table-responsive">
+              <table class="table table-bordered table-cart">
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Title</th>
+                    <th>Size</th>
+                    <th>Quantity</th>
+                    <th>Unit price</th>
+                    <th>SubTotal</th>
+                    <th>&nbsp;</th>
+                  </tr>
+                </thead>
+                <tbody id="shop-cart-table-rows">
+                </tbody>
+                <tr>
+                    <td colspan="5" class="text-right">Sub total</td>
+                    <td colspan="2"><b id="shop-cart-table-st">0.00</b></td>
+                </tr>                
+                <tr>
+                    <td colspan="5" class="text-right">GST</td>
+                    <td colspan="2"><b id="shop-cart-table-gst">0.00</b></td>
+                </tr>                
+                <tr>
+                    <td colspan="5" class="text-right">Shipping Charges</td>
+                    <td colspan="2"><b id="shop-cart-table-dc">0.00</b></td>
+                </tr>                
+                <tr>
+                    <td colspan="5" class="text-right">Total</td>
+                    <td colspan="2"><b id="shop-cart-table-tt">0.00</b></td>
+                </tr>                
+              </table>
+            </div>
+            <nav aria-label="Shopping Cart Next Navigation">
+                <ul class="pager">
+                  <li class="previous"><a href="/"><span aria-hidden="true">&larr;</span> Continue Shopping</a></li>
+                  <li class="next"><a href="/checkout.html">Checkout <span aria-hidden="true">&rarr;</span></a></li>
+                </ul>
+            </nav>
+          </div>
+        </div>
+    </div>
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+  </body>
+</html>

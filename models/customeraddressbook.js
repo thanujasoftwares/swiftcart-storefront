@@ -25,7 +25,7 @@ var CustomerAddressBook = sequelize.define('CustomerAddressBooks',
             allowNull: false,
             type: DataTypes.STRING
         },
-        street: {
+        state: {
             allowNull: false,
             type: DataTypes.STRING
         },

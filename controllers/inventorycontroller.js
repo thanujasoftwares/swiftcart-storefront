@@ -18,28 +18,28 @@ var InventoryController = {
                     case 'productid':
                         obj.ProductId=value;
                     break;
-                    case 'isfeatured':
-                        obj.isfeatured = value;
-                    break;
-                    case 'isnew':
-                        obj.isnew = value;
-                    break;
-                    case 'issale':
-                        obj.issale = value;
-                    break;
-                    case 'isbestseller':
-                        obj.isbestseller = value;
-                    break;
-                    case 'isdeal':
-                        obj.isdeal = value;
-                    break;
-                    case 'ishot':
-                        obj.ishot = value;
-                    break;
+                    // case 'isfeatured':
+                    //     obj.isfeatured = value;
+                    // break;
+                    // case 'isnew':
+                    //     obj.isnew = value;
+                    // break;
+                    // case 'issale':
+                    //     obj.issale = value;
+                    // break;
+                    // case 'isbestseller':
+                    //     obj.isbestseller = value;
+                    // break;
+                    // case 'isdeal':
+                    //     obj.isdeal = value;
+                    // break;
+                    // case 'ishot':
+                    //     obj.ishot = value;
+                    // break;
                     
-                    case 'sku':
-                        obj.sku = value;
-                    break;
+                    // case 'sku':
+                    //     obj.sku = value;
+                    // break;
                     case 'unitprice':
                         obj.unitprice = value;
                     break;

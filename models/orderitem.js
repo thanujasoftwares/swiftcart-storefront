@@ -17,6 +17,10 @@ var OrderItem = sequelize.define('OrderItems',
             type:DataTypes.INTEGER,
             allowNull: false
         },
+        InventoryId: {
+            type:DataTypes.INTEGER,
+            allowNull: false
+        },
         sku: {
             type:DataTypes.STRING,
             allowNull: false
@@ -24,6 +28,7 @@ var OrderItem = sequelize.define('OrderItems',
         quantity: {
             allowNull: false,
             type: DataTypes.FLOAT,
+            validate: {min: 1, max: 10},  
             defaultValue:0
         },
         unitprice: {
@@ -70,7 +75,7 @@ var OrderItem = sequelize.define('OrderItems',
         }, 
         isreceived:{
             type: DataTypes.BOOLEAN,
-            defaultValue: false
+            defaultValue: true
         },
         isreturned:{
             type: DataTypes.BOOLEAN,
@@ -103,6 +108,8 @@ OrderItem.associate = (models) => {
     OrderItem.belongsTo(models.Orders);
     OrderItem.belongsTo(models.Products);
 }
+
+
 
 return OrderItem
 }

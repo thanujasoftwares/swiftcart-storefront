@@ -13,40 +13,40 @@ var Inventory = sequelize.define('Inventories',
             allowNull: false,
             type: DataTypes.INTEGER
         },
-        sku: {
-            type:DataTypes.TEXT,
-            allowNull: true
-        }, 
-        isfeatured:{
-            allowNull: true,  
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },
-        isnew:{
-            allowNull: true,  
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },
-        issale:{
-            allowNull: true,  
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },
-        isbestseller:{
-            allowNull: true,  
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },
-        isdeal:{
-            allowNull: true,  
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },
-        ishot:{
-            allowNull: true,  
-            type: DataTypes.BOOLEAN,
-            defaultValue: true
-        },  
+        // sku: {
+        //     type:DataTypes.TEXT,
+        //     allowNull: true
+        // }, 
+        // isfeatured:{
+        //     allowNull: true,  
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: true
+        // },
+        // isnew:{
+        //     allowNull: true,  
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: true
+        // },
+        // issale:{
+        //     allowNull: true,  
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: true
+        // },
+        // isbestseller:{
+        //     allowNull: true,  
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: true
+        // },
+        // isdeal:{
+        //     allowNull: true,  
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: true
+        // },
+        // ishot:{
+        //     allowNull: true,  
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: true
+        // },  
         /* -- */   
         size:{
             type: DataTypes.BOOLEAN,

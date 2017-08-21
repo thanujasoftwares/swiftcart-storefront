@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+        
+    <div class="container m-t-3">
+        <div class="row">
+            <div class="title"><span>Order Confirmation</span></div>
+            <h1>Thank you for your order</h1>
+            <h2>Order Tracking Number: <strong id="thk-order-track-number"></strong></h2>
+            <h3>Next Steps:</h3>
+            <p>We are processing your order and will be contact you at <i id="thk-cust-email"></i> shortly on this order.</p>
+        </div>
+    </div>
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+    <script type="text/javascript">
+      function getParameters()
+      {
+          var vars = [], hash;
+          var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+          for(var i = 0; i < hashes.length; i++)
+          {
+              hash = hashes[i].split('=');
+              vars.push(hash[0]);
+              vars[hash[0]] = hash[1];
+          }
+          return vars;
+      }    
+      $(document).ready(function(){
+        var params=getParameters();
+        $("#thk-order-track-number").text(params['trackingnumber']);
+        $("#thk-cust-email").text(params['email']);
+      })
+    </script>
+  </body>
+</html>

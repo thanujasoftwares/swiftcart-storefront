@@ -64,7 +64,7 @@ var Customer = sequelize.define('Customers',
 
 Customer.associate = (models) => {
     Customer.hasMany(models.Orders);
-    Customer.hasMany(sequelize.models.CustomerAddressBooks);
+    Customer.hasMany(models.CustomerAddressBooks);
 }
 
 
