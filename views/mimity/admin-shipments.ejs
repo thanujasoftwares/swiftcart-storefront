@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+    
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="title m-b-2"><span><i class="fa fa-address-book-o"></i>&nbsp;Orders</span></div>
+                <table class="table table-hover">
+                  <tr>
+                    <th>Date</th>
+                    <th>Order #</th>
+                    <th>Amount</th>
+                    <th>Payment Type</th>
+                    <th>Status</th>
+                  </tr> 
+                  <tbody id="tbl-orders">
+                  </tbody> 
+                </table>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+              <button class="btn btn-theme" id="tbl-order-more-button"> More </button>
+            </div>
+        </div>
+      </div>
+      <!-- End Main Content -->    
+
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var d = new Date();
+        $.getJSON("/admin/orders.json?offset=0&ts="+d.getTime(),function(json){
+          var l=0;
+          $(json).each(function(index,element){
+            var tr="<tr>";
+            if(element['status']=='new'){
+              tr="<tr>";
+            }
+            else if(element['status']=='inprogress'){
+              tr="<tr class='info'>";
+            }            
+            else if(element['status']=='cancel'){
+              tr="<tr class='danger'>";
+            }            
+            else if(element['status']=='return'){
+              tr="<tr class='warning'>";
+            }            
+            else if(element['status']=='completed'){
+              tr="<tr class='success'>";
+            }            
+            tr +="<td>"+element['createdAt'].substring(0,10)+"</td>";
+            tr +="<td><a cl href='/admin/orders/"+element['id']+"-"+element['CustomerId']+'-'+element['TrackingNumber']+".html'>"+element['id']+"-"+element['CustomerId']+'-'+(element['TrackingNumber'] || 'unknown')+"</td>";
+            tr +="<td>"+parseFloat(element['totalprice'] || 0.00 ).toFixed(2) ||  +"</td>";
+            tr +="<td>"+element['paymentmethod']+"</td>";  
+            tr +="<td>"+element['status']+"</td></tr>";
+            $(tr).appendTo("#tbl-orders");
+            l++;
+          });
+
+          if(l<99){
+            $("#tbl-order-more-button").hide();
+          }
+        })
+      })
+    </script>
+  </body>
+</html>

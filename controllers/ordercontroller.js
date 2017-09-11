@@ -1,7 +1,7 @@
 'use strict';
 var _ = require("lodash");
 
-var {Orders,OrderItems, OrderAddressBooks} = require('../models');
+var {Orders,OrderItems, OrderAddressBooks, Products, ProductImages, CustomerAddressBooks, OrderShipments} = require('../models');
 
 var OrderController = {
     _mapValuesToOrder:(values) =>{
@@ -37,26 +37,37 @@ var OrderController = {
                 case 'discount':cols.discount=value;break;
             }
         })
-    },    
-    getId:(id) => {
-        return new Promise((resolve,reject) => {
-            if(id){
-                reject("order id not provided");
+    },  
+    _parseAndClean:(p) => {
+        var isdeleted = false;
+         _.map(p,(v,k)=>{
+            switch(k){
+                case 'isdeleted':
+                    if(v){
+                        isdeleted=true;
+                    }
+                    delete p[k]
+                    
+                break;
+                case 'createdAt':
+                case 'updatedAt':
+                    delete p[k]
+                default:
+                    if(_.isObject(v)){
+                        p[k] = OrderController._parseAndClean(v);
+                    }
             }
-            Orders.findAll({
-                include:[{
-                    model:OrderItems
-                }],
-                where:{
-                    id: id
-                }
-            }).then((orders) => {
-                resolve(orders);
-            }).catch((err) => {
-                reject("order not found");
-            })
         });
-    },
+        if(isdeleted){
+            return null;
+        }else{
+            return p;
+        }
+    },   
+    getJSONDocument:(order) => {
+        var obj = JSON.parse(JSON.stringify(order));
+        return JSON.stringify(OrderController._parseAndClean(obj));  
+    },        
     addOrderItem:(order,orderitem)=>{
         return new Promise((resolve,reject)=>{
             order.createOrderItem(orderitem).then((orderitem)=>{
@@ -132,7 +143,141 @@ var OrderController = {
                 reject(err);
             })
         })
+    },
+    getOrder: (customerid,id) => {
+        return new Promise((resolve,reject)=>{
+            Orders.findOne({
+                include:[
+                    {
+                        model: OrderItems,
+                        include:{
+                            model: Products,
+                            include:{
+                                model:ProductImages
+                            }
+                        }
+                    },
+                    {
+                        model: OrderAddressBooks,
+                        include:{
+                            model: CustomerAddressBooks,
+                        }
+                    },
+                    {
+                        model: OrderShipments
+                    }                    
+                ],
+                where:{
+                    id: id,
+                    CustomerId: customerid
+                }
+            }).then((orders)=>{
+                resolve(JSON.parse(OrderController.getJSONDocument(orders)));
+            }).catch((err)=>{
+                console.log(err);
+                reject(err);
+            })  
+        })      
+    }, 
+    getOrders: (options) => {
+        return new Promise((resolve,reject)=>{
+            Orders.findAll({
+                where:{
+                    isdeleted: false,
+                },
+                offset:(options.offset || 0)*100, 
+                limit: 100,
+                order:[
+                    ['id','DESC']
+                ]
+            }).then((orders)=>{
+                resolve(orders);
+            }).catch((err)=>{
+                console.log(err);
+                reject(err);
+            })  
+        })      
+    },  
+    update: (id,trackingnumber,options) =>{
+        return new Promise((resolve,reject) => {
+            Orders.update(options,{
+                where:{
+                    id:id,
+                    TrackingNumber:trackingnumber
+                }
+            }).then((order)=>{
+                if(order){
+                    resolve(order);
+                }else{
+                    console.log(err);
+                    reject("Order is not updated");
+                }
+            }).catch((err)=>{
+                console.log(err);
+                reject("Order is not updated");
+            })
+        })
+    }, 
+
+
+    addShippingLabel:(id,options) => {
+        return new Promise((resolve,reject) => {
+            Orders.findOne({
+                where:{
+                    id:id,
+                    isdeleted:false,
+                    iscancelled:false,
+                    isreceived:false
+                }
+            }).then((order)=>{
+                if(order){
+                    order.createOrderShipment({
+                        trackingnumber:options.trackno,
+                        shipdate:options.sdate,
+                        carrier:options.crr,
+                        shippingprice:options.prc
+                    }).then((shipment)=>{
+                        resolve(shipment);
+                    }).catch((err)=>{
+                        console.log(err);
+                        reject("Shipment is not added");
+                    })
+                }else{
+                    reject("Order not found")
+                }
+            }).catch((err)=>{
+                console.log(err);
+                reject("Errored while fetching order");
+            })
+        })
+    },
+    deleteShippingLabel:(id,options) => {
+        return new Promise((resolve,reject) => {
+            OrderShipments.update(
+            {
+                isdeleted:true
+            },
+            {
+                where:{
+                    OrderId:id,
+                    id:options.sid,
+                    isdeleted:false,
+                    iscancelled:false,
+                    isreceived:false
+                }
+            }).then((shipment)=>{
+                if(shipment){
+                    resolve(shipment);
+                }else{
+                    reject("Shipment not found")
+                }
+            }).catch((err)=>{
+                console.log(err);
+                reject("Errored while fetching Shipment");
+            })
+        })
     }
+    
 }
 
 module.exports = OrderController;

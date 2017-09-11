@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+    
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="title m-b-2"><span><i class="fa fa-address-book-o"></i>&nbsp;Edit Product</span></div>
+                <form class="form-horizontal" data-form='editproduct' method="PUT" action="/admin/product/<%=product.id%>/edit.html">
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label text-right">Title</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" placeholder="Name" name="name" value='<%= product.name %>' /> &nbsp;
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label text-right">SKU or Barcode</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" placeholder="SKU or Barcode" name="sku" value='<%= product.sku %>'/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label text-right">Left Label</label>
+                        <div class="checkbox col-sm-10">
+                            <label>
+                                    <input class="show" type="checkbox" data-name="isfeatured" <%= product.isfeatured ? 'checked' : '' %> >  Featured &nbsp;
+                            </label>
+                            <label>
+                                    <input class="show" type="checkbox" data-name="isnew" <%= product.isnew ? 'checked' : '' %> > New &nbsp;
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                            <label  class="col-sm-2 control-label text-right">Right Label</label>
+                            <div class="checkbox col-sm-7">
+                            <label>
+                                    <input class="show" type="checkbox" data-name="isbestseller" <%= product.isbestseller ? 'checked' : '' %>> Best Seller &nbsp;
+                            </label>
+                            <label>
+                                    <input class="show" type="checkbox" data-name="isdeal" <%= product.isdeal ? 'checked' : '' %> > Deal &nbsp;
+                            </label>
+                            <label>
+                                    <input class="show" type="checkbox" data-name="issale" <%= product.issale ? 'checked' : '' %> > Sale &nbsp;
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Gender</label>
+                        <div class="radio col-sm-10">
+                            <label>
+                                    <input class="show" type="radio" name="gender" value="m" <%= product.gender=='m' ? 'checked' : '' %> > Male &nbsp;
+                            </label>
+                            <label>
+                                    <input class="show" type="radio" name="gender" value="f" <%= product.gender=='f' ? 'checked' : '' %> > Female &nbsp;
+                            </label>
+                            <label>
+                                    <input class="show" type="radio" name="gender" value="u" <%= product.gender=='u' ? 'checked' : '' %> > Unisex &nbsp;
+                            </label>
+                        </div>                        
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Age</label>
+                        <div class="radio col-sm-10">
+                                <label>
+                                        <input class="show" type="radio" name="agegroup" value='n' <%= product.agegroup=='n' ? 'checked' : '' %> > Newborn &nbsp;
+                                </label>
+                                <label>
+                                        <input class="show" type="radio" name="agegroup" value='i' <%= product.agegroup=='i' ? 'checked' : '' %> > Infant &nbsp;
+                                </label>
+                                <label>
+                                        <input class="show" type="radio" name="agegroup" value='k' <%= product.agegroup=='k' ? 'checked' : '' %> > Kids &nbsp;
+                                </label>
+                                <label>
+                                        <input class="show" type="radio" name="agegroup" value='t' <%= product.agegroup=='t' ? 'checked' : '' %> > Teen &nbsp;
+                                </label>
+                                <label>
+                                        <input class="show" type="radio" name="agegroup" value='y' <%= product.agegroup=='y' ? 'checked' : '' %> > Young &nbsp;
+                                </label>
+                                <label>
+                                        <input class="show" type="radio" name="agegroup" value='a' <%= product.agegroup=='a' ? 'checked' : '' %> > Adult &nbsp;
+                                </label>
+                                <label>
+                                        <input class="show" type="radio" name="agegroup" value='s' <%= product.agegroup=='s' ? 'checked' : '' %> > Seniors &nbsp;
+                                </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Category</label>
+                        <div class="col-sm-7">
+                        <input class="form-control" name='category' placeholder="new category" data-autocomplete="true" value='<%= product.category %>' / >
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Subcategory</label> &nbsp;
+                        <div class="col-sm-7">
+                            <input class="form-control" name='subcategory' placeholder="new subcategory" data-autocomplete="true" value='<%= product.subcategory %>' />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Fabric</label> &nbsp;
+                        <div class="col-sm-7">
+                            <input class="form-control" name='materialtype' placeholder="Fabric" data-autocomplete="true" value='<%= product.materialtype %>'/>
+                        </div>
+                    </div>
+    
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label text-right">Manufacture</label>
+                        <div class="col-sm-7">
+                            <input type="text" class="form-control" placeholder="Name" name="manufacturename" value='<%= product.manufacturename %>' /> &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label text-right">Model</label>
+                        <div class="col-sm-7">
+                           <input type="text" class="form-control" placeholder="Name" name="modelno"value='<%= product.modelno %>' /> &nbsp;
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label  class="col-sm-2 control-label">Short Description<sup>*</sup></label>
+                        <div class="col-sm-7">
+                            <textarea class="form-control" id="inputSdesc" rows="3" placeholder="Optional"  name="shortdesc"><%= product.shortdesc %></textarea>
+                        </div>
+                    </div> 
+
+                    <div class="form-group align-text-top">
+                        <label  class="col-sm-2 control-label align-text-top">Product Description<sup>*</sup></label>
+                        <div class="col-sm-7">
+                            <textarea class="form-control" id="inputPdesc" rows="10" placeholder="Optional" name="longdesc"><%= product.longdesc %></textarea>
+                        </div>
+                    </div>    
+                    <div class="form-inline form-group">
+                        <label class="col-sm-2">&nbsp;</label>
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <p class="text-muted"> * Fields are optional </p>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a  href="/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html" class="btn btn-danger">Cancel</a>
+                        </div>
+                    </div>
+                    </form>
+                    <!---  Color palate -->
+                </div>
+            </div>
+        </div>
+        <%- include('shared/footer') %>
+        <%- include('shared/scripts') %>
+        <script type="text/javascript">
+
+            $(document).ready(function(){
+                var d = new Date();
+                $.getJSON("/products/categories.json?ts="+d.getTime(),function(json){
+                    if(json.status==200){
+                        localStorage.removeItem('categories');
+                        localStorage.removeItem('subcategories');
+                        localStorage.removeItem('fabric');
+                        
+                    }
+                    localStorage.setItem('categories',JSON.stringify(json.categories));
+                    localStorage.setItem('subcategories',JSON.stringify(json.subcategories));
+                    localStorage.setItem('fabric',JSON.stringify(json.fabric));
+                    
+                });
+                $('input[name="category"][data-autocomplete="true"]').autoComplete({
+                    minChars:0,
+                    source:function(term,suggest){
+                        term = term.toLowerCase();
+                        var choices = JSON.parse(localStorage.getItem('categories'));
+                        console.log(choices);
+                        var matches = [];
+                        for (i=0; i<choices.length; i++)
+                            if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
+                        suggest(matches);
+                    },
+                    renderItem: function (item, search){
+                        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                        var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+                        return '<div class="autocomplete-suggestion" data-selected="'+item+'" data-val="'+search+'">'+item+'</div>';
+                    },
+                    onSelect: function(e, term, item){
+                        $('input[name="category"]').val(item.data('selected'));
+                    }                    
+                });
+                $('input[name="subcategory"][data-autocomplete="true"]').autoComplete({
+                    minChars:0,
+                    source:function(term,suggest){
+                        term = term.toLowerCase();
+                        var choices = JSON.parse(localStorage.getItem('subcategories'));
+                        console.log(choices);
+                        var matches = [];
+                        for (i=0; i<choices.length; i++)
+                            if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
+                        suggest(matches);
+                    },
+                    renderItem: function (item, search){
+                        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                        var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+                        return '<div class="autocomplete-suggestion" data-selected="'+item+'" data-val="'+search+'">'+item+'</div>';
+                    },
+                    onSelect: function(e, term, item){
+                        $('input[name="subcategory"]').val(item.data('selected'));
+                    }                    
+                });
+
+                $('input[name="materialtype"][data-autocomplete="true"]').autoComplete({
+                    minChars:0,
+                    source:function(term,suggest){
+                        term = term.toLowerCase();
+                        var choices = JSON.parse(localStorage.getItem('fabric'));
+                        console.log(choices);
+                        var matches = [];
+                        for (i=0; i<choices.length; i++)
+                            if (~choices[i].toLowerCase().indexOf(term)) matches.push(choices[i]);
+                        suggest(matches);
+                    },
+                    renderItem: function (item, search){
+                        search = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+                        var re = new RegExp("(" + search.split(' ').join('|') + ")", "gi");
+                        return '<div class="autocomplete-suggestion" data-selected="'+item+'" data-val="'+search+'">'+item+'</div>';
+                    },
+                    onSelect: function(e, term, item){
+                        $('input[name="materialtype"]').val(item.data('selected'));
+                    }                    
+                });        
+                
+                $("input[type='checkbox'][data-name]").each(function(element){
+                    var p = $(this).parent();
+                    var n = $(this).attr("data-name");
+                    var v = $(this).attr('checked') ? true:false;
+                    var i = "chkbox-"+n
+                    $("<input type='hidden' value='"+v+"' name='"+n+"' id='"+i+"'/>").appendTo(p);
+                    $(this).click(function(){
+                        var v = $("#chkbox-"+n).val()=='true' ? 'false' : 'true';
+                        console.log(v);
+                        $("#chkbox-"+n).val(v); 
+                    })
+                });
+                
+                $("form[data-form='editproduct']").on("submit",function(event){
+                    event.preventDefault();
+                    var data = $(this ).serializeArray();
+                    var action = $(this).attr("action");
+                    var method = $(this).attr("method");
+                    $.ajax({
+                        url: action,
+                        type: method,
+                        dataType:'json',
+                        data:data,
+                        success:function(result){
+                            if(result.status==302){
+                                window.location = result.redirect;
+                            }
+                        },
+                        error:function(xhr,resp,text){
+                            console.log(resp);
+                        }
+                    });
+                });
+
+                
+            })
+        
+        </script>      
+  </body>
+
+
+
+</html>    

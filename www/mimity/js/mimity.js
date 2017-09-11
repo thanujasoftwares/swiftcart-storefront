@@ -3,12 +3,13 @@ $.fn.exist = function(){ return $(this).length > 0; }
 
 // Function to set color & style =============================================================
 function set_color() {
-  var color = localStorage.getItem('mimity-color');
-  var style = localStorage.getItem('mimity-style');
-  $('#color-chooser').val(color);
-  $('#style-chooser').val(style);
-  $('#theme').attr('href','/css/style.'+color+'.'+style+'.css');
-  $('.logo img').attr('src','/images/logo-'+color+'.png');
+  return;
+  // var color = localStorage.getItem('mimity-color');
+  // var style = localStorage.getItem('mimity-style');
+  // $('#color-chooser').val(color);
+  // $('#style-chooser').val(style);
+  // $('#theme').attr('href','/css/style.'+color+'.'+style+'.css');
+  // $('.logo img').attr('src','/images/logo-'+color+'.png');
 }
 
 // Function to get current scroll position ===================================================
@@ -22,24 +23,24 @@ function get_current_scroll() {
   $(function(){
 
     // Change Color Style ======================================================================
-    $('.chooser-toggle').click(function(){
-      $('.chooser').toggleClass('chooser-hide');
-    });
-    if (localStorage.getItem('mimity-color') == null) {
-      localStorage.setItem('mimity-color', 'teal');
-    }
-    if (localStorage.getItem('mimity-style') == null) {
-      localStorage.setItem('mimity-style', 'flat');
-    }
-    set_color();
-    $('#color-chooser').change(function(){
-      localStorage.setItem('mimity-color', $(this).val());
-      set_color();
-    });
-    $('#style-chooser').change(function(){
-      localStorage.setItem('mimity-style', $(this).val());
-      set_color();
-    });
+    // $('.chooser-toggle').click(function(){
+    //   $('.chooser').toggleClass('chooser-hide');
+    // });
+    // if (localStorage.getItem('mimity-color') == null) {
+    //   localStorage.setItem('mimity-color', 'teal');
+    // }
+    // if (localStorage.getItem('mimity-style') == null) {
+    //   localStorage.setItem('mimity-style', 'flat');
+    // }
+    // set_color();
+    // $('#color-chooser').change(function(){
+    //   localStorage.setItem('mimity-color', $(this).val());
+    //   set_color();
+    // });
+    // $('#style-chooser').change(function(){
+    //   localStorage.setItem('mimity-style', $(this).val());
+    //   set_color();
+    // });
 
     // Sticky Middle Header ====================================================================
     var lastScrollTop = 0;

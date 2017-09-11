@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+    
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+  
+          <!-- Account Sidebar -->
+          <div class="col-sm-4 col-md-3 m-b-3">
+            <!-- <div class="account-picture"><img src="images/demo/user.png" alt="" class="img-circle img-responsive"></div> -->
+            <h4 class="text-left m-b-3">Hello <%= customer.name %></h4>
+            <ul class="nav nav-pills nav-stacked">
+                <li role="presentation" class="active"><a href="#profile-settings" data-toggle="tab"><i class="fa fa-user-circle"></i>&nbsp;Profile</a></li>
+                <li role="presentation"><a href="#site-settings" data-toggle="tab"><i class="fa fa-gears"></i>&nbsp;Site Settings</a></li>
+                <li role="presentation"><a href="#share-settings" data-toggle="tab"><i class="fa fa-share"></i>&nbsp;Share</a></li>
+                <li role="presentation"><a href="#faq-settings" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;FAQ</a></li>
+                <li role="presentation" ><a href="#privacy-settings" data-toggle="tab"><i class="fa fa-user-secret"></i>&nbsp;Privacy Statement</a></li>
+                <li role="presentation" ><a href="#privacy-settings" data-toggle="tab"><i class="fa fa-legal"></i>&nbsp;Legal Statement</a></li>
+                <li role="presentation" ><a href="#tc-settings" data-toggle="tab"><i class="fa fa-list-ol"></i>&nbsp;Terms and Conditions</a></li>
+                <li role="presentation"><a href="javascript:logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a></li>
+            </ul>
+          </div>
+          <!-- End Account Sidebar -->
+  
+          <!-- My Profile Content -->
+          <div class="col-sm-8 col-md-9 tab-content">
+            <div id="profile-settings" class="tab-pane fade  in active">
+              <div class="title m-b-2"><span><i class="fa fa-user-circle"></i>&nbsp;Profile</span></div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <ul class="list-group list-group-nav">
+                    <li class="list-group-item">
+                      <strong>Name</strong>
+                      <p><%= customer.name %></p>
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Email Address</strong>
+                      <p><%= customer.email %></p>
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Phone Number</strong>
+                      <p><%= customer.phonenumber %></p>
+                    </li>
+                  </ul>
+                  <a href="#" class="btn btn-theme pull-right"><i class="fa fa-pencil"></i> Edit Profile</a>
+                </div>
+              </div>
+            </div>                  
+            <div id="site-settings" class="tab-pane fade">
+              <div class="title m-b-2"><span><i class="fa fa-gears"></i>&nbsp;Site Settings</span></div>
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="title" name="key"/>
+                <label> Title </label>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Website Title" value="<%= siteattributes.title.value0 || '' %>" name="value0"/>
+                  <div class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">Update &nbsp;<i class='fa fa-circle-o-notch fa-spin hide' ></i></button>
+                  </div>
+                </div>
+              </form>
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                <input type="hidden" value="logo" name="key"/>
+                <label> Logo </label>
+                <div class="input-group">
+                  <input class="form-control" type="file" placeholder="Website Logo" value="<%= siteattributes.logo.value0 || '' %>" name="value0"/>
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>              
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="abtus" name="key"/>
+                <label> About Us </label>
+                <textarea class="form-control" type="text" placeholder="About Us" name="value0"><%= siteattributes.abtus.value0 || '' %></textarea><br />
+                <button class="btn btn-primary">Update</button>
+              </form>              
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="ccpno" name="key"/>
+                <label> Customer Care Phone Number </label>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Customer Care Phone Number" value="<%= siteattributes.ccpno.value0 || '' %>" name="value0"/>
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="cceaddr" name="key"/>
+                <label> Contact Us Email Address </label>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Customer Care Email Address" value="<%= siteattributes.cceaddr.value0 || '' %>" name="value0"/>
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="offaddr" name="key"/>
+                <label> Office Address </label>
+                  <input class="form-control" type="text" placeholder="Street" value="<%= siteattributes.offaddr.value0 || '' %>" name="value0"/><br />
+                  <input class="form-control" type="text" placeholder="City" value="<%= siteattributes.offaddr.value1 || '' %>" name="value1"/><br />
+                  <input class="form-control" type="text" placeholder="State" value="<%= siteattributes.offaddr.value2 || '' %>" name="value2"/><br />
+                  <input class="form-control" type="text" placeholder="Country" value="<%= siteattributes.offaddr.value3 || '' %>" name="value3"/><br />
+                  <input class="form-control" type="text" placeholder="Phonenumber" value="<%= siteattributes.offaddr.value4 || '' %>" name="value4"/><br />
+                  <input class="form-control" type="text" placeholder="Postal Code" value="<%= siteattributes.offaddr.value5 || '' %>" name="value5"/><br />
+                  <button class="btn btn-primary">Update</button>
+              </form>              
+            </div>
+            <div id="share-settings" class="tab-pane fade">
+              <div class="title m-b-2"><span><i class="fa fa-share"></i>&nbsp;Share</span></div>
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="googleadsense" name="key"/>
+                <label> Google Adsense Code </label>
+                <textarea class="form-control" type="file" placeholder="Code"><%= siteattributes.gascode.value0 || '' %></textarea><br />
+                <button class="btn btn-primary">Update</button>
+              </form>              
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                  <input type="hidden" value="addcode" name="key"/>
+                  <label> Addthis Code </label>
+                  <textarea class="form-control" type="file" placeholder="Code" value=""><%= siteattributes.addcode.value0 || '' %></textarea><br />
+                  <button class="btn btn-primary">Update</button>
+              </form>              
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="fburl" name="key"/>
+                <label> Facebook </label>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="url" value="<%= siteattributes.fburl.value0 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="twurl" name="key"/>
+                <label> Twitter </label>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="url" value="<%= siteattributes.offaddr.value0 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="yturl" name="key"/>
+                <label> Youtube </label>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="url" value="<%= siteattributes.offaddr.value0 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+            </div>
+            <div id="faq-settings" class="tab-pane fade">
+              <div class="title m-b-2"><span><i class="fa fa-question-circle"></i>&nbsp;FAQ</span></div>
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq1" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq1.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq1.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq2" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq2.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq2.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq3" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq3.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq3.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq4" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq4.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq4.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq5" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq5.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq5.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq6" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq6.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq6.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq7" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq7.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq7.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq8" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq8.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq8.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq9" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq9.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq9.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+
+              
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="faq10" name="key"/>
+                <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq10.value0 || '' %>" /> <br />
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Answer" value="<%= siteattributes.faq10.value1 || '' %>" />
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+              
+
+            </div>
+            <div id="privacy-settings" class="tab-pane fade">
+              <div class="title m-b-2"><span><i class="fa fa-user-secret"></i>&nbsp;Privacy Statement</span></div>
+              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="prvstmt" name="key"/>
+                <label> Privacy Statement </label>
+                <textarea class="form-control" placeholder="Paragraph 1" ><%= siteattributes.prvstmt.value0 || '' %></textarea><br />
+                <textarea class="form-control" placeholder="Paragraph 2" ><%= siteattributes.prvstmt.value1 || '' %></textarea><br />
+                <textarea class="form-control" placeholder="Paragraph 3" ><%= siteattributes.prvstmt.value2 || '' %></textarea><br />
+                <textarea class="form-control" placeholder="Paragraph 4" ><%= siteattributes.prvstmt.value3 || '' %></textarea><br />
+                <textarea class="form-control" placeholder="Paragraph 5" ><%= siteattributes.prvstmt.value4 || '' %></textarea><br />
+                <textarea class="form-control" placeholder="Paragraph 6" ><%= siteattributes.prvstmt.value5 || '' %></textarea><br />
+                <button class="btn btn-primary">Update</button>
+              </form>              
+            </div>
+            <div id="tc-settings" class="tab-pane fade">
+                <div class="title m-b-2"><span><i class="fa fa-legal"></i>&nbsp;Legal Statement </span></div>
+                <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                    <input type="hidden" value="lgstmt" name="key"/>
+                    <label> Terms and Conditions </label>
+                    <textarea class="form-control" placeholder="Paragraph 1" ><%= siteattributes.lgstmt.value0 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 2" ><%= siteattributes.lgstmt.value1 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 3" ><%= siteattributes.lgstmt.value2 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 4" ><%= siteattributes.lgstmt.value3 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 5" ><%= siteattributes.lgstmt.value4 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 6" ><%= siteattributes.lgstmt.value5 || '' %></textarea><br />
+                        <button class="btn btn-primary">Update</button>
+                  </form>              
+            </div>
+            
+            <div id="tc-settings" class="tab-pane fade">
+                <div class="title m-b-2"><span><i class="fa fa-list-ol"></i>&nbsp;Terms and Conditions </span></div>
+                <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                    <input type="hidden" value="tncstmt" name="key"/>
+                    <label> Terms and Conditions </label>
+                    <textarea class="form-control" placeholder="Paragraph 1" ><%= siteattributes.tncstmt.value0 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 2" ><%= siteattributes.tncstmt.value1 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 3" ><%= siteattributes.tncstmt.value2 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 4" ><%= siteattributes.tncstmt.value3 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 5" ><%= siteattributes.tncstmt.value4 || '' %></textarea><br />
+                    <textarea class="form-control" placeholder="Paragraph 6" ><%= siteattributes.tncstmt.value5 || '' %></textarea><br />
+                        <button class="btn btn-primary">Update</button>
+                  </form>              
+                    
+            </div>
+            
+          </div>
+          <!-- End My Profile Content -->
+        </div>
+      </div>
+      <!-- End Main Content -->    
+
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+
+    <script type="text/javascript">
+      $("form[data-form='set']").each(function(){
+
+        var attr=$(this).attr("id")||undefined;
+        if(!attr){
+          $(this).attr("id","frm-ts-"+(new Date()).getTime());
+        }
+        attr=$(this).attr("id");
+
+        $("<input type='hidden' value='"+(new Date()).getTime()+"' name='ts' />").appendTo($(this));
+        $("<input type='hidden' value='#"+attr+"' name='refid' />").appendTo($(this));
+
+        $(this).on("submit",function(event){
+         event.preventDefault();
+         $(this).ajaxSubmit({
+            dataType:'json',
+            beforeSubmit: function(arr,$form, options){
+
+              $("#"+$($form).attr("id")+" .fa-spin").removeClass("hide");
+            },
+            error:function(xhr,resp,text){
+                console.log(resp);
+                alert("Error! Try again");
+            },
+            success: function(response) {
+                $("#status").empty().text(response);
+                    $(response.refid+" .fa-spin").hide();
+                    $(response.refid+" input[name='ts']").attr("value",(new Date()).getTime());
+                }
+            });
+            return false;
+         });
+        });
+    </script>
+
+
+  </body>
+</html>

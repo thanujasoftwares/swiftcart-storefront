@@ -107,6 +107,8 @@ var OrderItem = sequelize.define('OrderItems',
 OrderItem.associate = (models) => {
     OrderItem.belongsTo(models.Orders);
     OrderItem.belongsTo(models.Products);
+    OrderItem.belongsTo(models.Inventories);
+    
 }
 
 

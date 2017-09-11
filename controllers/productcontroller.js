@@ -72,7 +72,11 @@ var ProductController = {
                     break;
                     case 'VendorId':
                         prod.VendorId = value;
-                    break;          
+                    break; 
+                    case 'isactive':
+                    prod.isactive = value;
+                break; 
+                
                 }
             });
             return prod;
@@ -136,7 +140,7 @@ var ProductController = {
     },    
 
     /* RETRIEVE */
-    get:(options) => {
+    get:(options,isobject) => {
         return new Promise((resolve,reject)=>{
             var prodwhr = ProductController._mapColumn(options);
             var includes=[]
@@ -264,9 +268,12 @@ var ProductController = {
                 include:includes
                 ,where:prodwhr
             }).then((products)=>{
-                resolve(products)
+                if(products.length > 0){
+                    resolve(products);
+                }else{
+                    reject("No product is found");
+                }
             }).catch((err)=>{
-                console.log(err);
                 reject(err);
             })
         })
@@ -274,11 +281,88 @@ var ProductController = {
 
     'getCategories':(VendorId) => {
         return new Promise((resolve,reject)=>{
-            return Products.getCategories(VendorId).then((categories)=>{
-                resolve(categories)
-            }).catch((err)=>{
-                reject(err);
+            Products.getCategories(VendorId).then((menuitems)=>{
+                // resolve(categories);
+                var uniqCat = [];
+                var uniqSub = [];
+                var agegroup=['n','i','k','t','y','a','s'];
+                var menu=[]
+                _.map(agegroup,(age,index)=>{
+                    var prevCat = "";
+                    var prevCatInd=-1;
+                    var nav=[];
+                    _.map(menuitems,function(item,index){
+                        item.agegroup=item.agegroup.trim();
+                        if(item.agegroup==age){
+                            uniqCat.push(item.category);
+                            uniqSub.push(item.subcategory);
+                            if(item.category != prevCat){
+                                nav.push({category:item.category,subcategory:[]});
+                                prevCatInd++;
+                            }
+                            nav[prevCatInd]['subcategory'].push(item.subcategory);
+                        }
+                    });
+
+                    switch(age){
+                        case 'n': age='NewBorn'; break;
+                        case 'i': age='Infant'; break;
+                        case 't': age='Teens'; break;
+                        case 'k': age='Kids'; break;
+                        case 'y': age='Young'; break;
+                        case 'a': age='Adult'; break;
+                        case 's': age='Seniors'; break;
+                    }
+                    menu.push({
+                        'group':age,
+                        'groupitems':nav
+                    });
+                });
+
+                var fabric=['cotton','silk','linen','wool','leather','ramie','hemp','jute','acetate','chiffon','acrylic','organza',
+                'lastex','nylon','velvet','polyester','taffeta','denim','rayon','spandex','georgette','viscose','grey fabric',
+                'polypropylene','satin','industrial','fiberglass','filter','carbon','vinyl','plain','blended','crewel','kashmir',
+                'stretch','reflective','quilted','polyethylene','narrow','laminated','flocked','fire resistant','water resistant','corduroy',
+                'velvet','egyptian cotton','knit','memory foam','microfiber','fleece','micro fleece','polyester','stretch','spandex'
+                ];
+                            
+
+                uniqCat = _.uniq(uniqCat);
+                uniqSub = _.uniq(uniqSub);
+                // success = myCache.set("navigation", {
+                //     categories: uniqCat,
+                //     subcategories:uniqSub,
+                //     menu:menu
+                // }, 10000 );
+                resolve({
+                    categories: uniqCat,
+                    subcategories:uniqSub,
+                    menu:menu,
+                    fabric:fabric,
+                    age:{
+                        'n':'NewBorn',
+                        'i':'Infant',
+                        't':'Teens',
+                        'k':'Kids',
+                        'y':'Young',
+                        'a':'Adult',
+                        's':'Seniors'
+                    }
+                });
             })
+            .catch((err)=>{
+                console.log("Error while storing navigation");
+                console.log(err);
+                reject("system error");
+            }); 
+            // try{
+            //     var menu = myCache.get( "navigation", true ); 
+            //     resolve(menu);       
+            // }catch(err){
+            // }                
+            // }).catch((err)=>{
+            //     reject(err);
+            // })
         });        
     },
 
@@ -294,6 +378,7 @@ var ProductController = {
             "Products"."isdeal" as "isdeal",
             "Products"."issale" as "issale",
             "Products"."isbestseller" as "isbestseller",
+            ("Inventories"."instock"-"Inventories"."reserved") as "instock",
             min("Inventories"."unitprice") over (partition by "Inventories"."ProductId")  as "unitprice",
             min("Inventories"."discount") over (partition by "Inventories"."ProductId") as "discount",
             max("Products.ProductImages"."path") over (partition by "Products.ProductImages"."ProductId") as "imagepath",
@@ -306,7 +391,7 @@ var ProductController = {
         left join "Ratings" as "Ratings" on "Products"."id" = "Ratings"."ProductId"
         left join "Inventories" as "Inventories" on "Products"."id" = "Inventories"."ProductId"
         left join "ProductImages" as "Products.ProductImages" on  "Products.ProductImages"."ProductId" = "Products"."id"
-        where "Products"."isdeleted" = false and "Products"."sku" is not null and "Inventories"."size" is not null and ("Inventories"."instock"-"Inventories"."reserved")>0
+        where "Products"."isdeleted" = false and "Products"."sku" is not null 
             `
 
             sql = sql +" and "+where;
@@ -319,13 +404,239 @@ var ProductController = {
         });        
     },
 
+    deleteProdutImage:(productid,imageid) => {
+        return new Promise((resolve,reject)=>{
+            ProductImages.findOne({
+                where:{
+                    id:imageid,
+                    ProductId:productid
+                }
+            }).then((img)=>{
+                img.destroy({force:true});
+                resolve(img);
+            }).catch((err)=>{
+                console.log(err)
+                reject("Image not deleted");
+            })
+        });
+    },
+
 
     /* HELPER FUNCTIONS */
 
     getJSONDocument:(product) => {
         var obj = JSON.parse(JSON.stringify(product));
         return JSON.stringify(ProductController._parseAndClean(obj));  
+    },
+
+    /**
+     * This helper function prepare Product Object ready to display on webpage
+     */
+    prepareForNavigation:(obj)=>{
+        var products = JSON.parse(JSON.stringify(obj));
+        _.map(products,function(product,index){
+            product.agegroup=product.agegroup.trim();
+            switch(product.agegroup){
+                case 'n': products[index]['agegrouptitle']='Newborn'; break;
+                case 'i': products[index]['agegrouptitle']='Infant'; break;
+                case 'k': products[index]['agegrouptitle']='Kids'; break;
+                case 't': products[index]['agegrouptitle']='Teens'; break;
+                case 'y': products[index]['agegrouptitle']='Young'; break;
+                case 'a': products[index]['agegrouptitle']='Adult'; break;
+                case 's': products[index]['agegrouptitle']='Seniors'; break;
+            }
+            products[index]['agegroup']=product.agegroup;
+            switch(product.gender){
+                case 'f': products[index]['gendergroup']='female'; break;
+                case 'u': products[index]['gendergroup']='unisex'; break;
+                case 'm': products[index]['gendergroup']='male'; break;
+            }
+            products[index]['agegroup']=product.agegroup;
+
+            var inventory = [];
+            product['isoutofstock'] = true;
+            if(product['Inventories'] && product['Inventories'].length > 0){
+                var prevSize='';
+                var prevIndex=-1;
+                _.map(product['Inventories'],(inventoryitem,index) => {
+                    if(prevSize != inventoryitem.size){
+                        inventory.push({
+                            'size':inventoryitem.size,
+                            'items':[]
+                        });
+                        prevSize=inventoryitem.size;
+                        prevIndex++;
+                    }
+                    inventory[prevIndex]['items'].push(inventoryitem);
+                });
+            }
+            delete products[index]['Inventories'];  
+            products[index]['Inventories']=inventory; 
+
+            var cartvalue = JSON.stringify({
+                'id':product.id,
+                'name':product.name
+            });
+    
+            var cartbuffervalue = new Buffer(cartvalue).toString("base64");
+            products['cartvalue'] = cartbuffervalue;
+                
+
+        });
+
+        
+        return products;             
+    },
+
+    getIndiaStates:()=>{
+        return [
+            {
+            "key": "AN",
+            "name": "Andaman and Nicobar Islands"
+            },
+            {
+            "key": "AP",
+            "name": "Andhra Pradesh"
+            },
+            {
+            "key": "AR",
+            "name": "Arunachal Pradesh"
+            },
+            {
+            "key": "AS",
+            "name": "Assam"
+            },
+            {
+            "key": "BR",
+            "name": "Bihar"
+            },
+            {
+            "key": "CG",
+            "name": "Chandigarh"
+            },
+            {
+            "key": "CH",
+            "name": "Chhattisgarh"
+            },
+            {
+            "key": "DH",
+            "name": "Dadra and Nagar Haveli"
+            },
+            {
+            "key": "DD",
+            "name": "Daman and Diu"
+            },
+            {
+            "key": "DL",
+            "name": "Delhi"
+            },
+            {
+            "key": "GA",
+            "name": "Goa"
+            },
+            {
+            "key": "GJ",
+            "name": "Gujarat"
+            },
+            {
+            "key": "HR",
+            "name": "Haryana"
+            },
+            {
+            "key": "HP",
+            "name": "Himachal Pradesh"
+            },
+            {
+            "key": "JK",
+            "name": "Jammu and Kashmir"
+            },
+            {
+            "key": "JH",
+            "name": "Jharkhand"
+            },
+            {
+            "key": "KA",
+            "name": "Karnataka"
+            },
+            {
+            "key": "KL",
+            "name": "Kerala"
+            },
+            {
+            "key": "LD",
+            "name": "Lakshadweep"
+            },
+            {
+            "key": "MP",
+            "name": "Madhya Pradesh"
+            },
+            {
+            "key": "MH",
+            "name": "Maharashtra"
+            },
+            {
+            "key": "MN",
+            "name": "Manipur"
+            },
+            {
+            "key": "ML",
+            "name": "Meghalaya"
+            },
+            {
+            "key": "MZ",
+            "name": "Mizoram"
+            },
+            {
+            "key": "NL",
+            "name": "Nagaland"
+            },
+            {
+            "key": "OR",
+            "name": "Odisha"
+            },
+            {
+            "key": "PY",
+            "name": "Puducherry"
+            },
+            {
+            "key": "PB",
+            "name": "Punjab"
+            },
+            {
+            "key": "RJ",
+            "name": "Rajasthan"
+            },
+            {
+            "key": "SK",
+            "name": "Sikkim"
+            },
+            {
+            "key": "TN",
+            "name": "Tamil Nadu"
+            },
+            {
+            "key": "TS",
+            "name": "Telangana"
+            },
+            {
+            "key": "TR",
+            "name": "Tripura"
+            },
+            {
+            "key": "UP",
+            "name": "Uttar Pradesh"
+            },
+            {
+            "key": "UK",
+            "name": "Uttarakhand"
+            },
+            {
+            "key": "WB",
+            "name": "West Bengal"
+            }
+            ];  
     }
+
 }
 
 module.exports = ProductController;

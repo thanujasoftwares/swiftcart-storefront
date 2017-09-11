@@ -10,8 +10,8 @@
   
     <!-- Main Content -->
     <div class="container m-t-3">
+          
       <div class="row">
-
         <!-- Image List -->
         <div class="col-sm-4">
           <div class="image-detail">
@@ -39,8 +39,26 @@
         </div>
         <!-- End Image List -->
 
+                
         <div class="col-sm-8">
-            <div class="title-detail"><%= product.name %></div>
+            <% if(isadmin) { %> 
+              <div class="btn-grp">
+                <input type="hidden" value="<%= product.isactive %>" name="isactive" />
+                <a href="/admin/product/<%=product.id%>/edit.html" class="btn btn-success">Edit</a>
+                <button class="btn btn-warning" onclick="javascript:updateStatusProduct()"><%= product.isactive ? 'Block':'Active' %></button>
+                <button class="btn btn-danger" onclick="javascript:deleteProduct()">Delete</button>
+              </div> <br />
+          <% } %>
+        
+            <div class="title-detail">
+              <%= product.name %>
+              <% if(isadmin){ %>
+                <h5><div class="text-primary">Active: <%= product.isactive ? 'Yes' : 'No' %></div></h5>
+              <% } %>
+                  
+            </div>
+
+                          
             <div class="text-muted"><%= product.shortdesc %></div><br />
             <table class="table table-detail">
               <tbody>
@@ -49,7 +67,10 @@
                       <td>
                           <%= product.sku %>
                   </td>
-                  </tr>                  
+                  </tr>
+                <%
+                if(product.Inventories.length  > 0) {
+                %> 
                 <tr>
                   <td>Size</td>
                   <td>
@@ -66,54 +87,22 @@
                       </select>
                     </td>
                 </tr>
-                  <!-- <tr>
-                    <td>Color</td>
+                <tr>
+                    <td>Price</td>
                     <td>
-                        <span class="label label-warning arrowed" data-option="prd-color" data-option-value="default">Select Size</span>
-                      <%
-                        product.Inventories.forEach(function(inventory){
-                        inventory.items.forEach(function(item){
-                      %>
-                          <span data-picker='prd-sku' data-picker-value='<%= item.sku %>' data-option='prd-color' data-option-value='<%= inventory.size %>' id='prd-sku-<%= item.sku %>' style='background-color:<%= item.color %>;padding:5px 5px;color:white'>
-                            <i class="fa fa-check">&nbsp;</i>
-                          </span>&nbsp;
-                      <%  
-                        }) })
-                      %>
+                        <span class="label label-warning arrowed" data-option="prd-size" data-option-value="default">Select Size</span>
+                          <%
+                            product.Inventories.forEach(function(inventory){
+                              inventory.items.forEach(function(item){
+                          %>
+                            <div data-option='prd-size' data-option-value='<%= item.id %>-<%= item.size %>' class="price" id='prd-<%= product.sku %>-<%= item.size %>'>
+                              <div><%= item.unitprice - (item.unitprice * item.discount*0.01) %><span class="label label-default arrowed">-<%= item.discount %>%</span></div>
+                              <span class="price-old"><%= item.unitprice %></span>
+                            </div>
+                          <% }) }) %>
                         
                     </td>
-                  </tr> -->
-                  <!-- <tr>
-                      <td>SKU or Barcode</td>
-                      <td>
-                          <span class="label label-warning arrowed" data-option="prd-sku" data-option-value="default">Select Color</span>
-                            <%
-                              product.Inventories.forEach(function(inventory){
-                                inventory.items.forEach(function(item){
-                            %>
-                              <div data-option='prd-sku' data-option-value='<%= item.sku %>' class="price" id='prd-sku-<%= item.sku %>-code'>
-                                <%= item.sku %>
-                              </div>
-                            <% }) }) %>
-                         
-                      </td>
-                  </tr>                   -->
-                  <tr>
-                      <td>Price</td>
-                      <td>
-                          <span class="label label-warning arrowed" data-option="prd-size" data-option-value="default">Select Size</span>
-                            <%
-                              product.Inventories.forEach(function(inventory){
-                                inventory.items.forEach(function(item){
-                            %>
-                              <div data-option='prd-size' data-option-value='<%= item.id %>-<%= item.size %>' class="price" id='prd-<%= product.sku %>-<%= item.size %>'>
-                                <div><%= item.unitprice - (item.unitprice * item.discount*0.01) %><span class="label label-default arrowed">-<%= item.discount %>%</span></div>
-                                <span class="price-old"><%= item.unitprice %></span>
-                              </div>
-                            <% }) }) %>
-                         
-                      </td>
-                    </tr>
+                  </tr>
                 <tr>
                 <td>Quantity</td>
                   <td>
@@ -131,6 +120,12 @@
                       %>
                   </td>
                 </tr>
+                <% } else { %>
+                  <tr>
+                    <td> Size </td>
+                    <td> <label class="text-danger"> Out of stock </label </td>
+                  </tr>
+                <% } %>  
                 <tr>
                   <td></td>
                   <td>
@@ -168,7 +163,10 @@
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#desc" aria-controls="desc" role="tab" data-toggle="tab">Description</a></li>
             <li role="presentation"><a href="#detail" aria-controls="detail" role="tab" data-toggle="tab">Details</a></li>
-            <!-- <li role="presentation"><a href="#review" aria-controls="review" role="tab" data-toggle="tab">Reviews (<%= (product.Rating.star1+product.Rating.star2+product.Rating.star3+product.Rating.star4+product.Rating.star5)/5 %>)</a></li> -->
+            <% if(isadmin) { %>
+              <li role="presentation"><a href="#inventory" aria-controls="detail" role="tab" data-toggle="tab">Inventory</a></li>  
+              <li role="presentation"><a href="#images" aria-controls="detail" role="tab" data-toggle="tab">Images</a></li>  
+            <% } %>            
           </ul>
           <!-- End Nav tabs -->
 
@@ -224,94 +222,337 @@
                 </div>
               </div>
               <!-- End Detail Tab Content -->
+              <% if(isadmin) { %>
+                
+              <!-- Inventory Tab Content -->
+              <div role="tabpanel" class="tab-pane" id="inventory">
+                  
+                  <div class="well">
+                    <table class="table table-bordered">
+                        <tr>
+                          <th>Size</th>
+                          <th>Unit Prize</th>
+                          <th>Discount %</th>
+                          <th>Instock</th>
+                          <th>Reserved</th>
+                          <th>Available</th>
+                          <th>&nbsp;</th>
+                        </tr>
+                        
+                <%
+                  product.Inventories.forEach(function(inventory){
+                    inventory.items.forEach(function(item){
+                %>
 
-              <!-- Review Tab Content -->
-              <!-- <div role="tabpanel" class="tab-pane" id="review">
-                <div class="well">
-                  <div class="media">
-                    <div class="media-left">
-                      <a href="#">
-                        <img class="media-object img-thumbnail" alt="64x64" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+">
-                      </a>
-                      <div class="product-rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star-half-o"></i>
-                      </div>
-                    </div>
-                    <div class="media-body">
-                      <h5 class="media-heading"><strong>John Thor</strong></h5>
-                      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                    </div>
-                  </div>
-                  <div class="media">
-                     <div class="media-left">
-                      <a href="#">
-                        <img class="media-object img-thumbnail" alt="64x64" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCI+PHJlY3Qgd2lkdGg9IjY0IiBoZWlnaHQ9IjY0IiBmaWxsPSIjZWVlIi8+PHRleHQgdGV4dC1hbmNob3I9Im1pZGRsZSIgeD0iMzIiIHk9IjMyIiBzdHlsZT0iZmlsbDojYWFhO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1zaXplOjEycHg7Zm9udC1mYW1pbHk6QXJpYWwsSGVsdmV0aWNhLHNhbnMtc2VyaWY7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+NjR4NjQ8L3RleHQ+PC9zdmc+">
-                      </a>
-                      <div class="product-rating">
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star"></i>
-                        <i class="fa fa-star-half-o"></i>
-                        <i class="fa fa-star-o"></i>
-                      </div>
-                    </div>
-                    <div class="media-body">
-                      <h5 class="media-heading"><strong>Michael Lelep</strong></h5>
-                      Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                    </div>
-                  </div>
-                  <hr/>
-                  <h4 class="m-b-2">Add your review</h4>
-                  <form role="form">
-                    <div class="form-group">
-                      <label for="Name">Name</label>
-                      <input type="text" id="Name" class="form-control" placeholder="Name">
-                    </div>
-                    <div class="form-group">
-                      <label for="Email">Email</label>
-                      <input type="text" id="Email" class="form-control" placeholder="Email">
-                    </div>
-                    <div class="form-group">
-                      <label>Rating</label><div class="clearfix"></div>
-                      <div class="input-rating"></div>
-                    </div>
-                    <div class="form-group">
-                      <label for="Review">Your Review</label>
-                      <textarea id="Review" class="form-control" rows="5" placeholder="Your Review"></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-theme">Submit Review</button>
+                    <tr>
+                      <td><%= item.size %></td>
+                      <td><%= item.unitprice %></td>
+                      <td><%= item.discount %></td>
+                      <td><%= item.instock %></td>
+                      <td><%= item.reserved %></td>
+                      <td><%= item.instock - item.reserved%></td>
+                      <td>
+                        <a href="javascript:deleteInventory(<%= item.id %>)" class="btn btn-default btn-sm"><i class="fa fa-trash"></i></a>
+                        <button class="btn btn-default btn-sm" data-toggle="#frm-edt-inv-<%=item.id%>" ><i class="fa fa-pencil"></i></button>
+                        
+                      </td>
+                    </tr>
+                  <%
+                    })
+                  })
+                  %>
+                    </table>
+                  <%
+                    product.Inventories.forEach(function(inventory){
+                      inventory.items.forEach(function(item){
+                  %>
+                      
+                  <form action="/admin/product/<%=product.id%>/inventory/<%=item.id%>.html" method="PUT"  id="frm-edt-inv-<%=item.id%>" data-form="inv">
+                    <input type="hidden" name="productid" value="<%= product.id %>" />
+                    <table class="table table-bordered">
+                      <tbody>
+                        <tr>
+                          <td class="col-md-2">Size</td>
+                          <td><input type="text" value="<%=item.size %>" name="size" placeholder="size"/></td>
+                        </tr>
+                        <tr>
+                          <td>Price</td>
+                          <td><input type="text" value="<%=item.unitprice %>" name="unitprice" placeholder="unit price"/></td>
+                        </tr>
+                        <tr>
+                          <td>Discount</td>
+                          <td><input type="text" value="<%=item.discount %>" name="discount" placeholder="discount"/></td>
+                        </tr>
+                        <tr>
+                            <td>Instock</td>
+                            <td><input type="text" value="<%=item.instock %>" name="instock" placeholder="Instock"/></td>
+                        </tr>
+                        <tr>
+                          <td>Reserved</td>
+                          <td><input type="text" value="<%=item.reserved %>" name="reserved" placeholder="Reserve"/></td>
+                        </tr>
+                        <tr>
+                            <td colspan=2>
+                              <center>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" class="btn btn-info" data-toggle="#frm-edt-inv-<%=item.id%>">Cancel</button>
+                              </center>
+                            </td>
+                        </tr>
+                      </tbody>
+                    </table>                     
+                  </form>  
+                  <%
+                    })
+                    })
+                  %>
+                                  
+                  <form action="/admin/product/<%=product.id%>/inventory.html" method="POST"  id="frm-add-inv" data-form="inv">
+                  <input type="hidden" name="productid" value="<%= product.id %>" />
+                  <table class="table table-bordered">
+                    <tbody>
+                      <tr>
+                        <td class="col-md-2">Size</td>
+                        <td><input type="text" value="" name="size" placeholder="size"/></td>
+                      </tr>
+                      <tr>
+                        <td>Price</td>
+                        <td><input type="text" value="" name="unitprice" placeholder="unit price"/></td>
+                      </tr>
+                      <tr>
+                        <td>Discount</td>
+                        <td><input type="text" value="" name="discount" placeholder="discount"/></td>
+                      </tr>
+                      <tr>
+                          <td>Instock</td>
+                          <td><input type="text" value="" name="instock" placeholder="Instock"/></td>
+                      </tr>
+                      <tr>
+                        <td>Reserved</td>
+                        <td><input type="text" value="" name="reserved" placeholder="Reserve"/></td>
+                      </tr>
+                      <tr>
+                          <td colspan=2>
+                            <center>
+                              <button type="submit" class="btn btn-primary">Save</button>
+                              <button type="reset"  class="btn btn-warning">reset</button>
+                              <button type="button" class="btn btn-info" data-toggle="#frm-add-inv">Cancel</button>
+                            </center>
+                          </td>
+                      </tr>
+                    </tbody>
+                  </table>                  
                   </form>
+                  <button class="btn btn-info" data-toggle="#frm-add-inv">Add Inventory</button>
                 </div>
-              </div> -->
-              <!-- End Review Tab Content -->
+                </div>
+                <!-- End Inventory Tab Content -->              
 
+              <!-- Image Tab Content -->
+              <div role="tabpanel" class="tab-pane" id="images">
+                  
+                  <div class="well">
+                      <form action="/admin/product/<%= product.id %>/image.html" method="post" enctype="multipart/form-data" data-form='prd'>
+                        <div class="input-group">
+                            <input type="file" class="form-control" name="filename"/>
+                            <span class="input-group-btn">
+                                <button type="submit" class="btn btn-info">Upload Image <i class='fa fa-circle-o-notch fa-spin hide' ></i> </button>
+                            </span>
+                        </div>
+                    </form>
+                    <br />
+                    <div class="row">
+                      <% 
+                          product.ProductImages.forEach(function(image){ 
+                      %>
+                          <div class="col-md-2 text-center">
+                              <img id='img-<%= image.id %>' src='<%= image.path %><%= image.sm %>' alt="" class="img-thumbnail" >
+                              <a href="javascript:deleteimage(<%=image.id %>)"><i class="fa fa-trash"></i></a>
+                          </div>
+
+                      <% 
+                        }) 
+                      %>
+                  </div>    
+                </div>
+                </div>
+                <!-- End Image Tab Content -->              
+                
+                
+                <%
+                  }
+                %>
           </div>
           <!-- End Tab panes -->
 
         </div>
       </div>
-
-      <!-- Related Products -->
-      <!-- <div class="row m-t-3">
-        <div class="col-xs-12">
-          <div class="title"><span>Related Products</span></div>
-          <div class="related-product-slider owl-carousel owl-theme owl-controls-top-offset">
-          </div>
-        </div>
-      </div> -->
-      <!-- End Related Products -->
-
-    </div>
+  </div>
+  
     <!-- End Main Content -->
 
     <%- include('shared/footer') %>
     <%- include('shared/scripts') %>
 
+    <%
+    if(isadmin){
+    %>
+      <script type="text/javascript">
+          function updateStatusProduct(){
+            var status = $("input[type='hidden'][name='isactive']").val() == 'true' ? 'false' : 'true';
+          
+            $.ajax({
+                url: '/admin/product/<%=product.id %>/edit.html',
+                type: 'PUT',
+                dataType:'json',
+                data:'isactive='+status,
+                success:function(result){
+                    if(result.status==302){
+                        window.location.reload();
+                    }
+                },
+                error:function(xhr,resp,text){
+                    console.log(resp);
+                }
+            });
 
+          }
+          function deleteProduct(){
+              $.ajax({
+                url: '/admin/product/<%=product.id %>/edit.html',
+                type: 'DELETE',
+                dataType:'json',
+                data:'1',
+                success:function(result){
+                    if(result.status==302){
+                        window.location = result.redirect;
+                    }
+                },
+                error:function(xhr,resp,text){
+                    console.log(resp);
+                }
+            });
+          }
+          function deleteimage(id){
+            $.ajax({
+              url:'/admin/product/<%= product.id %>/image.html',
+              type:'DELETE',
+              data:'imageid='+id,
+              success:function(response){
+                if(response.status==302){
+                  window.location.reload();
+                }
+              }
+            })
+          }
+          function deleteInventory(id){
+            $.ajax({
+              url:'/admin/product/<%= product.id %>/inventory.html',
+              type:'DELETE',
+              data:'id='+id,
+              success:function(response){
+                if(response.status==302){
+                  window.location.reload();
+                }
+              }
+            })
+          }
+
+          $(document).ready(function(){
+
+
+            $("button[data-toggle]").each(function(){
+              var target=$(this).attr("data-toggle");   
+
+              $(target).hide();
+              $(this).on("click",function(){
+                  var target=$(this).attr("data-toggle");   
+                  $(target).toggle();
+              })
+
+            })
+
+
+            $("form[data-form='prd']").each(function(){ 
+              var attr=$(this).attr("id")||undefined;
+              if(!attr){
+                $(this).attr("id","frm-ts-"+(new Date()).getTime());
+              }
+              attr=$(this).attr("id");
+
+              $("<input type='hidden' value='"+(new Date()).getTime()+"' name='ts' />").appendTo($(this));
+              $("<input type='hidden' value='#"+attr+"' name='refid' />").appendTo($(this));
+                         
+              $(this).on("submit",function(event){
+                event.preventDefault();
+                $(this).ajaxSubmit({
+                    dataType:'json',
+                    beforeSubmit: function(arr,$form, options){
+                      $("#"+$($form).attr("id")+" .fa-spin").removeClass("hide");
+                    },
+                    error:function(xhr,resp,text){
+                        console.log(resp);
+                        alert("Error! Try again");
+                    },
+                    success: function(response) {
+                          if(response.status==302){
+                            window.location.reload();
+                          }
+                          $("#status").empty().text(response);
+                          $(response.refid+" .fa-spin").hide();
+                          $(response.refid+" input[name='ts']").attr("value",(new Date()).getTime());
+                        }
+                    });
+                  return false;
+              });
+            });
+
+            $("form[data-form='inv']").each(function(){ 
+              var attr=$(this).attr("id")||undefined;
+              if(!attr){
+                $(this).attr("id","frm-ts-"+(new Date()).getTime());
+              }
+              attr=$(this).attr("id");
+
+              $("<input type='hidden' value='"+(new Date()).getTime()+"' name='ts' />").appendTo($(this));
+              $("<input type='hidden' value='#"+attr+"' name='refid' />").appendTo($(this));
+                        
+              $(this).on("submit",function(event){
+                event.preventDefault();
+                var action = $(this).attr("action");
+                var method = $(this).attr("method");
+                
+                console.log(action);
+
+                $.ajax({
+                    url:action,
+                    type:method,
+                    data:$(this).serialize(),
+                    dataType:'json',
+                    beforeSubmit: function(arr,$form, options){
+                      $("#"+$($form).attr("id")+" .fa-spin").removeClass("hide");
+                    },
+                    error:function(xhr,resp,text){
+                        console.log(resp);
+                        alert("Error! Try again");
+                    },
+                    success: function(response) {
+                          if(response.status==302){
+                            window.location.reload();
+                          }
+                          $(response.refid+" .fa-spin").hide();
+                          $(response.refid+" input[name='ts']").attr("value",(new Date()).getTime());
+                        }
+                    });
+                  return false;
+              });
+            })
+        })   /*JQuery */       
+
+      </script>
+    <%
+    }
+    %>
 
   </body>
 </html>

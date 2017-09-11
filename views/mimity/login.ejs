@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+
+    <!-- Main Content -->
+    <div class="container m-t-3">
+      <div class="row">
+
+        <!-- Register Form -->
+        <div class="col-sm-8 login-register-form m-b-3">
+          <div class="title"><span>Create An Account</span></div>
+          <div class="row">
+            <form method="POST" action="/login.html" data-form="login">
+              <%
+                if(ischeckout){
+              %>
+                  <input type="hidden" name="ishidden" value="true" />
+              <%
+                }
+              %>
+              <div class="col-sm-6">
+                  <div class="form-group">
+                      <label for="nameInput">First Name</label>
+                      <input type="text" class="form-control" id="nameInput" name="fname" placeholder="First Name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="nameInput">Last Name</label>
+                    <input type="text" class="form-control" id="nameInput" name="lname" placeholder="Last Name" required>
+                  </div>
+                  <div class="form-group">
+                      <label for="addressInput">Phone Number</label>
+                      <input type="text" class="form-control" id="nameInput" placeholder="Phone Number" name="pno" required>
+                  </div>
+              </div>
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label for="emailInput">Email address</label>
+                  <input type="email" class="form-control" id="emailInput" placeholder="Email" name="eaddr">
+                </div>
+                <div class="form-group">
+                  <label for="passwordInput">Password</label>
+                  <input type="password" class="form-control" id="passwordInput" placeholder="Password" name="paswd" required>
+                </div>
+                <div class="form-group">
+                  <label for="passwordConfirmInput">Confirm Password</label>
+                  <input type="password" class="form-control" id="passwordConfirmInput" placeholder="Confirm Password" name="cpaswd" required>
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="chktc"><span> I agree with <a href="#"><u>Terms and Conditions.</u></a></span>
+                  </label>
+                </div>
+              </div>
+              <div class="col-xs-12">
+                <input type="hidden" name="type" value="register" />
+                <button type="submit" class="btn btn-theme"><i class="fa fa-long-arrow-right"></i> Register</button>
+              </div>
+          </form>
+        </div>
+      </div>
+        <!-- End Register Form -->
+
+        <!-- Login Form -->
+        <div class="col-sm-4">
+          <div class="title"><span>Already Registered ?</span></div>
+          <form method="PUT" action="/login.html" data-form="login">
+            <%
+              if(ischeckout){
+            %>
+                <input type="hidden" name="ischeckout" value="true" />
+            <%
+              }else{
+            %>
+              <input type="hidden" name="ischeckout" value="false" />
+            <%
+              }
+            %>            
+            <div class="form-group">
+              <label for="emailInputLogin">Email address</label>
+              <input type="email" class="form-control" id="emailInputLogin" placeholder="Email" name="eaddr">
+            </div>
+            <div class="form-group">
+              <label for="passwordInputLogin">Password</label>
+              <input type="password" class="form-control" id="passwordInputLogin" placeholder="Password" name="paswd">
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"><span> Remember me</span>
+              </label>
+            </div>
+            <button type="submit" class="btn btn-theme"><i class="fa fa-long-arrow-right"></i> Login</button>
+          </form>
+          <%
+            if(ischeckout){
+          %>
+          <!-- Alternative Login Button -->
+          <div>
+            <br />
+            <div class="title"><span>Guest</span></div>
+            <a href="/guest/checkout.html" class="btn btn-theme btn-md"><i class="fa fa-shopping-cart"></i> Guest Checkout </a>
+          </div>
+          <%
+          }
+          %>          
+      
+          <!-- End Alternative Login Button -->
+        </div>
+        <!-- End Login Form -->
+
+      </div>
+    </div>
+    <!-- End Main Content -->
+
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+
+  </body>
+</html>

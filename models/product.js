@@ -57,32 +57,37 @@ var Product = sequelize.define('Products',
         isfeatured:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
         },
         isnew:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
         },    
         issale:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
         },
         isbestseller:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
         },
         isdeal:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
         },
         ishot:{
             allowNull: true,  
             type: DataTypes.BOOLEAN,
-            defaultValue: true
+            defaultValue: false
+        },            
+        isactive:{
+            allowNull: true,  
+            type: DataTypes.BOOLEAN,
+            defaultValue: false
         },            
         isdeleted:{
             allowNull: true,  

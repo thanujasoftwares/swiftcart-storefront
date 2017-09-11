@@ -55,5 +55,11 @@ var OrderAddressBook = sequelize.define('OrderAddressBooks',
     }  
 );
 
+OrderAddressBook.associate = (models) => {
+    OrderAddressBook.belongsTo(models.CustomerAddressBooks);
+}
+
+
+
 return OrderAddressBook
 }

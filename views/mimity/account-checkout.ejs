@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+  
+          <!-- Checkout Form -->
+          <div class="col-md-9">
+            <div class="title"><span>Checkout</span></div>
+            <form>
+              <input type="hidden" data-cart-attribute='cstype' value='c'>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label for="firstNameInput"> Name (*)</label>
+                  <input type="text" class="form-control" readonly value="<%= customer.name %>" data-cart-attribute='name'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="emailInput">Email Address (*)</label>
+                  <input type="email" class="form-control" readonly value="<%= customer.email %>" data-cart-attribute='eaddr'>
+                </div>
+                <div class="form-group col-sm-12">
+                    <label for="addressInput">Saved Address (*)</label>
+                      <select class="form-control selectpicker" id="chkSavedAddress" data-live-search="true" data-dropup-auto="false" data-cart-attribute='adbkid' value="">
+                          <option value=""> --- Please Select --- </option>
+                            <%
+                            customeraddressbooks.forEach(function(ab){
+                            %>
+                            <option value='<%= ab.id %>' id="chkoptSavedAddress-<%= ab.id %>">
+                                <%= ab.addressline1 %>&nbsp;<%=ab.addressline2 %>,&nbsp;&nbsp;<%=ab.city %>,&nbsp;&nbsp;<%=ab.state %>,&nbsp;&nbsp;<%=ab.country %>, &nbsp;<%=ab.postalcode  %>,&nbsp;Phonenumber: <%=ab.phonenumber %>
+                            </option>
+                          <% }) %>
+                      </select>
+                </div>
+                <div class="form-group col-sm-12">
+                  <label for="phoneInput">Shipping Address (*)</label>
+                  <input type="text" class="form-control" id="adrl1" placeholder="Address Line 1" required data-cart-attribute='adrl1' value="">
+                  <br />
+                  <input type="text" class="form-control" id="adrl2" placeholder="Address Line 2 (optional)" data-cart-attribute='adrl2' value="">
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="cityInput">City (*)</label>
+                  <input type="text" class="form-control" id="adrcty" placeholder="City" required data-cart-attribute='adrcty' value="">
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="regionInput">Region / State (*)</label>
+                  <select class="form-control selectpicker" id="adrst" data-live-search="true" data-dropup-auto="false" data-cart-attribute='adrst' value="">
+                    <option value=""> --- Please Select --- </option>
+                    <% states.forEach(function(st){ %>
+                      <option value='<%= st.key %>'><%= st.name %></option>
+                    <% }) %>
+                  </select>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="postInput">Post Code (*)</label>
+                  <input type="text" class="form-control" id="adrpst" placeholder="Post Code" required data-cart-attribute='adrpst' value="">
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="phoneInput">Phone Number (*)</label>
+                  <input type="text" class="form-control" id="phoneInput" placeholder="Phone Number" required data-cart-attribute='pno'  value="<%= customer.phonenumber %>" value="">
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="phoneInput">Payment Type (*)</label>
+                  <input type="text" class="form-control" placeholder="Payment Type" readonly data-cart-attribute='paytype'  value="cod" value="">
+                </div>                
+                <!-- <div class="form-group col-sm-6">
+                    <label for="postInput">Payment Type (*)</label>
+                    <select class="form-control selectpicker" id="paytype" data-live-search="true" data-dropup-auto="false" data-cart-attribute='paytype'>
+                        <% paytypes.forEach(function(st){ %>
+                          <option value='<%= st.key %>'><%= st.name %></option>
+                        <% }) %>                      
+                    </select>
+                </div> -->
+                <!-- <div class="form-group col-sm-12">
+                  <label for="notesInput">Notes</label>
+                  <textarea class="form-control" rows="3" id="notesInput"></textarea>
+                </div> -->
+              </div>
+              <div class="table-responsive">
+                  <table class="table table-bordered table-cart">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Title</th>
+                          <th>Size</th>
+                          <th>Quantity</th>
+                          <th>Unit price</th>
+                          <th>SubTotal</th>
+                        </tr>
+                      </thead>
+                      <tbody id="shop-chkout-table-rows">
+                      </tbody>
+                      <tr>
+                          <td colspan="4" class="text-right">Sub total</td>
+                          <td colspan="2"><b id="shop-cart-table-st">0.00</b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">GST</td>
+                          <td colspan="2"><b id="shop-cart-table-gst">0.00</b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">Shipping Charges</td>
+                          <td colspan="2"><b id="shop-cart-table-dc">0.00</b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">Total</td>
+                          <td colspan="2"><b id="shop-cart-table-tt">0.00</b></td>
+                      </tr>                
+                    </table>
+              </div>
+              <nav aria-label="Checkout Next Navigation">
+                <ul class="pager">
+                  <li class="previous"><a href="/cart.html"><span aria-hidden="true">&larr;</span> Back to Shopping Cart</a></li>
+                  <li class="next"><a href="javascript:checkout()">Confirm Order <span aria-hidden="true">&rarr;</span></a></li>
+                </ul>
+              </nav>
+            </form>
+          </div>
+          <!-- End Checkout Form -->
+        </div>  
+    </div> 
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        $("#chkSavedAddress").on("change",function(index,element){
+          var addrtext=$("#chkoptSavedAddress-"+$(this).val()).text().trim();
+          console.log(addrtext);
+          var address=addrtext.split(",");
+          address[0]=(address[0]).trim();
+          address[1]=(address[1]).trim();
+          address[2]=(address[2]).trim();
+          address[3]=(address[3]).trim();
+          address[4]=(address[4]).trim();
+          
+
+          $("#adrl1").val(address[0]);
+          $("#adrl2").val("");
+          
+          $("#adrcty").val(address[1]);
+          $("#adrpst").val(address[4]);
+          $("#adrst").val(address[2]);
+          $("#adrst").selectpicker('refresh')
+        });
+      })
+    </script>
+  </body>
+</html>

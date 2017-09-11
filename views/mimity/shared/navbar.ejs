@@ -8,11 +8,8 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
               </button>
-              <a href="cart.html" class="btn btn-default btn-cart-xs visible-xs pull-right">
-                <i class="fa fa-shopping-cart"></i> Cart : 4
-              </a>
-              <a href="wishlist.html" class="btn btn-default btn-cart-xs visible-xs pull-right">
-                <i class="fa fa-heart"></i> Wishlist : 3
+              <a href="/cart.html" class="btn btn-default btn-cart-xs visible-xs pull-right">
+                <i class="fa fa-shopping-cart"></i>&nbsp;&nbsp;<span cart-checkout-attributes="cnt"></span>
               </a>
             </div>
             <div class="collapse navbar-collapse" id="navbar-ex1-collapse">
@@ -31,11 +28,37 @@
                     </ul>
                   </li>
                   <% } %>
-                <% }); %>  
+                <% }); %> 
+                <li data-menu="c" class="hide">
+                  <a href="/login.html" class="nav-my-account" >My Account</a>
+                </li>
+                <li class="dropdown hide" data-menu="a">
+                    <a href="#" >Admin <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                          <li><a href='/admin/product/new.html'><i class="fa fa-asterisk"></i>&nbsp;New Product</a></li>
+                          <li><a href='/admin/customers.html'><i class="fa fa-users"></i>&nbsp;Customers</a></li>
+                          <li><a href='/admin/orders.html'><i class="fa fa-shopping-cart"></i>&nbsp;Orders</a></li>
+                          <li><a href='#' class="nav-my-account"><i class="fa fa-gear"></i>&nbsp;Settings</a></li>
+                    </ul>
+                </li>    
+                <li>
+                    <form class="navbar-form visible-sm visible-xs" role="search">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Order #" name="q">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit"><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </li>
               </ul>
-              <ul class="nav navbar-nav navbar-right navbar-feature visible-lg">
-                  <li><a href="/cart.html">Shopping Cart</a></li>
-                  <li><a href="/checkout.html">Checkout</a></li>
+              <ul class="nav navbar-nav navbar-right navbar-feature visible-lg visible-md">
+                  <li class="input-group hide" data-menu="c">
+                        <input id="nav-ord-track" type="text" class="form-control" placeholder="Order #" name="q" pattern="[0-9]{1,}[-]{1}[0-9]{1,}[-]{1}[a-z0-9]{12}">
+                  </li>
+                  <li class="input-group-btn hide" data-menu="c">
+                      <button onclick="javascript:fetchorder()" class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button>
+                  </li>
                 </ul>
             </div>
         </div>

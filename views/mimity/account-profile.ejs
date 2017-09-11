@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+  
+          <!-- Account Sidebar -->
+          <div class="col-sm-4 col-md-3 m-b-3">
+            <div class="account-picture"><img src="images/demo/user.png" alt="" class="img-circle img-responsive"></div>
+            <h4 class="text-left m-b-3">Hello <%= customer.name %></h4>
+            <ul class="nav nav-pills nav-stacked">
+              <%
+                if(customer.customertype == 'c'){
+              %>
+                <li role="presentation" class="active"><a href="#account-orders" data-toggle="tab"><i class="fa fa-shopping-cart"></i>&nbsp;Order History</a></li>
+                <li role="presentation"><a href="#account-address" data-toggle="tab"><i class="fa fa-address-book-o"></i>&nbsp;Address Book</a></li>
+                <li role="presentation" ><a href="#account-profile" data-toggle="tab"><i class="fa fa-gears"></i>&nbsp;Settings</a></li>
+                <%
+                if(!isadmin){
+                %>
+                  <li role="presentation"><a href="javascript:logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a></li>
+                <%
+                }
+                %>
+              <%
+                }
+              %>
+            </ul>
+          </div>
+          <!-- End Account Sidebar -->
+  
+          <!-- My Profile Content -->
+          <div class="col-sm-8 col-md-9 tab-content">
+            <div id="account-profile" class="tab-pane fade">
+              <div class="title m-b-2"><span><i class="fa fa-gears"></i>&nbsp;Settings</span></div>
+              <div class="row">
+                <div class="col-xs-12">
+                  <ul class="list-group list-group-nav">
+                    <li class="list-group-item">
+                      <strong>Name</strong>
+                      <p><%= customer.name %></p>
+                    </li>
+                    <!-- <li class="list-group-item">
+                      <strong>Is Verified</strong>
+                      <p><%= customer.isverified %></p>
+                    </li> -->
+                    <li class="list-group-item">
+                      <strong>Email Address</strong>
+                      <p><%= customer.email %></p>
+                    </li>
+                    <li class="list-group-item">
+                      <strong>Phone Number</strong>
+                      <p><%= customer.phonenumber %></p>
+                    </li>
+                  </ul>
+                  <a href="#" class="btn btn-theme pull-right"><i class="fa fa-pencil"></i> Edit Settings</a>
+                </div>
+              </div>
+            </div>
+            <%
+            if(customer.customertype == 'c'){
+            %>
+            <div id="account-address" class="tab-pane fade">
+                <div class="title m-b-2"><span><i class="fa fa-address-book-o"></i>&nbsp;Address Book</span></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                      <ul class="list-group list-group-nav">
+                        <%
+                          customeraddressbook.forEach(function(ab){
+                        %>
+                          <li class="list-group-item">
+                            <strong><%= ab.name %></strong>
+                            <p><%= ab.addressline1 %>&nbsp;<%=ab.addressline2 %>,<%=ab.city %>,<%=ab.state %>,<%=ab.country %> &nbsp;<%=ab.postalcode  %>&nbsp;Phonenumber: <%=ab.phonenumber %></p>
+                          </li>
+                        <%    
+                          })
+                        %>
+                      </ul>
+                      <a href="#account-new-address" class="btn btn-theme pull-right" data-toggle="tab"><i class="fa fa-plus"></i> New Address</a>
+                    </div>
+                </div>  
+            </div>
+            <div id="account-orders" class="tab-pane fade in active">
+                <div class="title m-b-2"><span><i class="fa fa-shopping-cart"></i>&nbsp;Order History</span></div>
+                <div class="row">
+                    <div class="col-xs-12">
+                      <ul class="list-group list-group-nav">
+                        <%
+                        orders.forEach(function(order){
+                        %>
+                          <li class="list-group-item">
+                            <p> Order Date: <%= order.createdAt %> </p>
+                            <a href="orders/<%= order.id %>-<%= order.CustomerId %>-<%= order.TrackingNumber %>.html"><strong><%= order.id %>-<%= order.CustomerId %>-<%= order.TrackingNumber %></strong></a>
+                            <p> Status: <%= order.status %> </p>
+                            <div id="ord-itm-<%= order.id %>"></div>
+                          </li>
+                        <%    
+                          })
+                        %>
+                      </ul>
+                      <a href="#" class="btn btn-theme pull-right"><i class="fa fa-search"></i> Search</a>
+                    </div>
+                </div>      
+            </div>   
+            <div id="account-new-address" class="tab-pane fade">
+                <div class="title m-b-2"><span><i class="fa fa-address-book-o"></i>&nbsp;Address Book</span></div>
+                <div class="row">
+                    <form class="col-xs-12" method="POST" action="/account/<%= customer.id %>/address.html" data-form>
+                      <ul class="list-group list-group-nav">
+                        <li class="list-group-item">
+                            <input type="text" class="form-control" id="phoneInput" placeholder="Name" required name='adrnm'>
+                        </li>
+                        <li class="list-group-item">
+                          <input type="text" class="form-control" id="phoneInput" placeholder="Address Line 1" required name='adrl1'>
+                        </li>
+                        <li class="list-group-item">
+                            <input type="text" class="form-control" id="phoneInput" placeholder="Address Line 2 (Optional)" required name='adrl2'>
+                        </li>
+                        <li class="list-group-item">
+                            <input type="text" class="form-control" id="phoneInput" placeholder="City" required name='adrcity'>
+                        </li>
+                        <li class="list-group-item">
+                            <select class="form-control selectpicker" id="regionInput" data-live-search="true" data-dropup-auto="false" name='adrst' required>
+                                <option value=""> --- State --- </option>
+                                <% states.forEach(function(st){ %>
+                                  <option value='<%= st.key %>'><%= st.name %></option>
+                                <% }) %>
+                              </select>
+                        </li>
+                        <li class="list-group-item">
+                            <input type="text" class="form-control" id="phoneInput" placeholder="Pin code" required name='adrpst'>
+                        </li>
+                        <li class="list-group-item">
+                            <input type="text" class="form-control" id="phoneInput" placeholder="Phone nUmber" required name='pno'>
+                        </li>
+                      </ul>
+                      <a href="#account-address" class="btn btn-theme pull-right" data-toggle="tab"><i class="fa fa-times"></i> Cancel</a>
+                      <button type="submit" class="btn btn-theme pull-right"><i class="fa fa-save"></i> Save</button>
+                    </form>
+                </div>      
+            </div>   
+            <%
+            }
+            %>                  
+          </div>
+          <!-- End My Profile Content -->
+        </div>
+      </div>
+      <!-- End Main Content -->    
+
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+  </body>
+</html>

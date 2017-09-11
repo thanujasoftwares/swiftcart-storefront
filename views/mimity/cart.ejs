@@ -50,7 +50,17 @@
             <nav aria-label="Shopping Cart Next Navigation">
                 <ul class="pager">
                   <li class="previous"><a href="/"><span aria-hidden="true">&larr;</span> Continue Shopping</a></li>
-                  <li class="next"><a href="/checkout.html">Checkout <span aria-hidden="true">&rarr;</span></a></li>
+                  <%
+                    if(customerId!=0){
+                  %>
+                    <li class="next"><a href="/account/<%= customerId %>/checkout.html" >Checkout <span aria-hidden="true">&rarr;</span></a></li>
+                  <%
+                    }else{
+                  %>
+                    <li class="next"><a href="/guest/login.html" >Checkout <span aria-hidden="true">&rarr;</span></a></li>
+                  <%
+                    }
+                  %>
                 </ul>
             </nav>
           </div>

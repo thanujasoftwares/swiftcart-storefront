@@ -106,7 +106,9 @@ var Order = sequelize.define('Orders',
 
 Order.associate = (models) => {
     Order.hasMany(models.OrderItems);
-    Order.hasMany(models.OrderAddressBooks);
+    Order.hasOne(models.OrderAddressBooks);
+    Order.hasMany(models.OrderShipments);
+    Order.belongsTo(models.Customers);
 }
 
 

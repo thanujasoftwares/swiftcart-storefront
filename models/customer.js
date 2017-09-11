@@ -25,6 +25,13 @@ var Customer = sequelize.define('Customers',
             allowNull: false,
             type: DataTypes.STRING
         },
+        authcode:{
+            allowNull:false,
+            type:DataTypes.STRING,
+            defaultValue:function(){
+                return moment().format('x');
+            }
+        },
         isblocked:{
             type: DataTypes.BOOLEAN,
             defaultValue: false
@@ -37,6 +44,11 @@ var Customer = sequelize.define('Customers',
             allowNull: true,  
             type: DataTypes.BOOLEAN,
             defaultValue: false
+        },
+        customertype:{
+            allowNull: true,  
+            type: DataTypes.STRING,
+            defaultValue: 'c'
         },
         createdAt: {
             allowNull: false,

@@ -13,10 +13,13 @@ if(!options){
 
 var bodyParser = require('body-parser');
 var routes = require('./routes/index.js');
+const uuidv1 = require('uuid/v1');
+var serverSession = require('express-session');
+//var clientSession = require('client-session');
 var app = express();
 
 /* TEMPLATE ENGINE */
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'views','mimity'));
 app.set('view engine', 'ejs');
 
 /* CORS */
@@ -44,9 +47,54 @@ app.use(function(req, res, next) {
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb',extended: true, parameterLimit:50000 }));
 
+var cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+
+/* SESSION */
+
+app.use(serverSession({
+    //cookieName: 'user',
+    secret: 'MyAwesomeKiran',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false },
+    genid: function(req) {
+        return uuidv1() // use UUIDs for session IDs
+    },    
+}));
+
+// app.use(function (req, res, next) {
+//     if (!req.session.views) {
+//       console.log("i m here");
+//       req.session.views = {}
+//     }
+  
+//     // get the url pathname
+//     var pathname = parseurl(req).pathname
+  
+//     // count the views
+//     req.session.views[pathname] = (req.session.views[pathname] || 0) + 1
+  
+//     next();
+// })
+
 /* ROUTES */
 app.use('/', routes);
 
+
+// app.use(function(req, res, next) {
+//     if (req.user.token) {
+//       res.setHeader('x-session-Token', uuidv1());
+//     } else {
+//       // setting a property will automatically cause a Set-Cookie response
+//       // to be sent
+//       var token = uuidv1();
+//       req.user.token = token;
+//       res.setHeader('x-session-Token', token);
+//     }
+//     next();
+// });
 
 /* REDIRECTS */
 app.use('/',express.static(path.join(__dirname, 'www','mimity')));

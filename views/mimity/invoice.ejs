@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+          <%
+            if(isadmin){
+          %>
+          <div class="col-md-12">
+              <div class="text-center">
+                <button id="inv-ord-sts-btn-complete" class="btn pull-right <%= (order.status=='complete')?'btn-success':'' %> " onclick="javascript:setOrderStatus(<%= order.id %>,'complete')"> Complete <i class='fa fa-circle-o-notch fa-spin hide' style='font-size:24px'></i> </button>                  
+                <button id="inv-ord-sts-btn-refund"  class="btn pull-right  <%= (order.status=='refund')?'btn-success':'' %>" onclick="javascript:setOrderStatus(<%= order.id %>,'refund')"> Refund <i class='fa fa-circle-o-notch fa-spin hide' style='font-size:24px'></i> </button>                  
+                <button id="inv-ord-sts-btn-cancel"  class="btn pull-right  <%= (order.status=='cancel')?'btn-success':'' %>" onclick="javascript:setOrderStatus(<%= order.id %>,'cancel')"> Cancel <i class='fa fa-circle-o-notch fa-spin hide' style='font-size:24px'></i> </button>                  
+                <button id="inv-ord-sts-btn-shipped"  class="btn pull-right <%= (order.status=='shipped')?'btn-success':'' %>" onclick="javascript:setOrderStatus(<%= order.id %>,'shipped')"> Shipped <i class='fa fa-circle-o-notch fa-spin hide' style='font-size:24px'></i> </button>                  
+                <button id="inv-ord-sts-btn-confirm"  class="btn pull-right <%= (order.status=='confirm')?'btn-success':'' %>" onclick="javascript:setOrderStatus(<%= order.id %>,'confirm')"> Confirm <i class='fa fa-circle-o-notch fa-spin hide' style='font-size:24px'></i> </button>                  
+                <button id="inv-ord-sts-btn-new" class="btn pull-right <%= (order.status=='new')?'btn-success':'' %> " onclick="javascript:setOrderStatus(<%= order.id %>,'new')"> New <i class='fa fa-circle-o-notch fa-spin hide' style='font-size:24px'></i> </button>                  
+              </div>
+            </div>
+          <%
+          }
+          %>
+          <div class="col-md-12">
+            <div class="title"><span>Invoice (<%= order.id %>-<%= order.CustomerId %>-<%= order.TrackingNumber %>)</span></div>
+              <div class="row">
+                <div class="form-group col-sm-6">
+                  <label for="firstNameInput">Name (*)</label>
+                  <input type="text" class="form-control" readonly value="<%= order.OrderAddressBook.CustomerAddressBook.name%>">
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="emailInput">Email Address (*)</label>
+                  <input type="email" class="form-control" readonly value="<%= customer.email %>">
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="phoneInput">Phone Number (*)</label>
+                  <input type="text" class="form-control" readonly value="<%= order.OrderAddressBook.CustomerAddressBook.phonenumber %>">
+                </div>
+                <div class="form-group col-sm-12">
+                  <label for="addressInput">Address (*)</label>
+                  <input type="text" class="form-control" readonly value='<%= order.OrderAddressBook.CustomerAddressBook.addressline1 %>'>
+                  <br />
+                  <input type="text" class="form-control" readonly value='<%= order.OrderAddressBook.CustomerAddressBook.addressline2 %>'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="cityInput">City (*)</label>
+                  <input type="text" class="form-control" readonly value='<%= order.OrderAddressBook.CustomerAddressBook.city %>'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="cityInput">State (*)</label>
+                  <input type="text" class="form-control" readonly value='<%= order.OrderAddressBook.CustomerAddressBook.state %>'>
+                </div>
+                <div class="form-group col-sm-6">
+                  <label for="postInput">Post Code (*)</label>
+                  <input type="text" class="form-control" readonly value='<%= order.OrderAddressBook.CustomerAddressBook.postalcode %>'>
+                </div>
+                <div class="form-group col-sm-6">
+                    <label for="postInput">Payment Type (*)</label>
+                    <input type="text" class="form-control" readonly value='<%= order.paymentmethod %>'>
+                  </div>
+              </div>
+              <div class="table-responsive">
+                  <table class="table table-bordered table-cart">
+                      <thead>
+                        <tr>
+                          <th>Product</th>
+                          <th>Title</th>
+                          <th>Quantity</th>
+                          <th>Unit price</th>
+                          <th>SubTotal</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <%
+                          order.OrderItems.forEach(function(orderitem){
+                        %>
+                          <tr>
+                              <td class="img-cart">
+                                  <a href='/<%= orderitem.Product.agegroup %>/<%= orderitem.Product.category %>/<%= orderitem.Product.subcategory %>/<%= orderitem.Product.gender %>/<%= orderitem.Product.id %>/any/<%= orderitem.Product.name %>.html'>
+                                  <img alt="Product" src="<%= orderitem.Product.ProductImages[0].path %><%= orderitem.Product.ProductImages[0].sm %>" class="img-thumbnail">
+                                  </a>
+                              </td>
+                              <td>
+                                <p>
+                                  <a href='/<%= orderitem.Product.agegroup %>/<%= orderitem.Product.category %>/<%= orderitem.Product.subcategory %>/<%= orderitem.Product.gender %>/<%= orderitem.Product.id %>/any/<%= orderitem.Product.name %>.html'>
+                                  <%= orderitem.Product.name %>
+                                  </a>
+                                </p>
+                                <small>Sku :<%= orderitem.sku %></small>
+                                <small>Size : XL</small>
+                              </td>
+                              <td class="text-center"><%= orderitem.quantity %></td>
+                              <td class="unit"><%= (orderitem.unitprice).toFixed(2) %></td>
+                              <td class="sub"><%= (orderitem.quantity*orderitem.unitprice).toFixed(2) %></td>
+                            </tr>   
+                        <%    
+                          })
+                        %>
+                      </tbody>
+                      <tr>
+                          <td colspan="4" class="text-right">Sub total</td>
+                          <td colspan="2"><b><%= order.totalprice.toFixed(2) %></b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">GST</td>
+                          <td colspan="2"><b><%= (order.totalprice * order.tax).toFixed(2) %></b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">Shipping Charges</td>
+                          <td colspan="2"><b><%= order.shippingprice.toFixed(2) %></b></td>
+                      </tr>                
+                      <tr>
+                          <td colspan="4" class="text-right">Total</td>
+                          <td colspan="2"><b><%= (order.totalprice + order.totalprice * order.tax + order.shippingprice).toFixed(2) %></b></td>
+                      </tr>                
+                    </table>
+              </div>
+          </div>
+          <div class="col-md-12">
+            <div class="title"><span>Shipments</span></div>
+              <table class="table">
+                <%
+                if(isadmin){
+                %>
+                <tr>
+                  <th>Carrier</th>
+                  <th class="col-sm-6">Tracking Number</th>
+                  <th>Ship Date </th>
+                  <th>Ship Price </th>
+                  <th>&nbsp;</th>
+                </tr>
+                <tr>
+                  <form method="POST" action="/admin/orders/<%= order.id %>/shipping.html" data-form="shipping">
+                    <input type="hidden" name="oid" value="<%= order.id %>" />
+                    <td><input type="text" class="form-control" placeholder="Carrier" value="" name="crr"></td>
+                    <td><input type="text" class="form-control" placeholder="Tracking Number" value="" name="trackno"></td>
+                    <td><input type="text" class="form-control" placeholder="Price" value="0.00" name="prc"></td>
+                    <td>                      
+                      <div class="input-group date">
+                        <input type="text" class="form-control" value="<%= (new Date()).getFullYear() %>" name="sdate">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                    </div>                      
+                    </td>
+                    <td><button class="btn btn-theme"> Add </button></td>
+                  </form>
+                </tr>
+                <tbody id="tbl-order-shipping">
+                  <%
+                  order.OrderShipments.forEach(function(shipment){
+                    if(shipment){
+                  %>
+                  <tr id="trs-<%= shipment.id %>">
+                    <td><%= shipment.carrier %></td>
+                    <td><%= shipment.trackingnumber %></td>
+                    <td><%= shipment.shipdate.toString().slice(0,10) %></td>
+                    <td><%= parseFloat(shipment.shippingprice).toFixed(2) %></td>
+                    <td><i class='fa fa-circle-o-notch fa-spin hide' style='font-size:24px'></i><a class="btn btn-md" href="javascript:deleteShippingLabel(<%= shipment.id %>,'#trs-<%= shipment.id %>')"><i class="fa fa-trash"></i></a></td>
+                  </tr>                    
+                  <%  
+                      }
+                  })
+                  %>
+                </tbody>
+                <%
+                }else{
+                %>
+                  <tr>
+                    <th>Carrier</th>
+                    <th class="col-sm-6">Tracking Number</th>
+                    <th>Ship Date </th>
+                  </tr>
+                  
+                  <tbody>
+                      <%
+                      order.OrderShipments.forEach(function(shipment){
+                        if(shipment){
+                      %>
+                      <tr id="trs-<%= shipment.id %>">
+                        <td><%= shipment.carrier %></td>
+                        <td><%= shipment.trackingnumber %></td>
+                        <td><%= shipment.shipdate.toString().slice(0,10) %></td>
+                      </tr>                    
+                      <%  
+                          }
+                      })
+                      %>
+                    </tbody>
+                  <%  
+                  }
+                  %>
+              </table>
+          </div>
+        </div>  
+    </div> 
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+    <%
+      if(isadmin){
+    %>
+    <script type="text/javascript">
+
+        function deleteShippingLabel(id,refid){
+          var d=new Date();
+          $.ajax({
+             url: '/admin/orders/<%= order.id %>/shipping.html',
+             type: 'DELETE',
+             dataType:'json',
+             data:"sid="+id+"&refid="+refid+"&ts="+d.getTime(),
+             beforeSend:function(){
+              $(refid+" .fa-spin").each(function(){
+                $(this).show();
+              });
+             },
+             success:function(result){
+                 if(result.status==200){
+                    $(result.refid).each(function(){
+                      $(this).remove();
+                    });
+                 }
+             },
+             error:function(xhr,resp,text){
+                 console.log(resp);
+             }
+          });
+        }
+
+        function setOrderStatus(id,status){
+          var d=new Date();
+          var refid = "#inv-ord-sts-btn-"+status;
+          
+          $.ajax({
+             url: '/admin/orders/<%= order.id %>-<%= order.CustomerId %>-<%= order.TrackingNumber %>.html',
+             type: 'PUT',
+             dataType:'json',
+             data:"status="+status+"&refid="+refid+"&ts="+d.getTime(),
+             beforeSend:function(){
+              $(refid+" .fa-spin").each(function(){
+                $(this).removeClass("hide");
+              });
+             },
+             success:function(result){
+                 if(result.status==200){
+                    $("button[id^='inv-ord-sts-btn-']").each(function(){
+                        $(this).removeClass("btn-success");
+                        if(result.refid == "#"+$(this).attr("id")){
+                          $(this).addClass("btn-success");
+                        }
+                    });
+
+                    $(result.refid+" .fa-spin").each(function(){
+                      $(this).hide();
+                    });
+                 }
+             },
+             error:function(xhr,resp,text){
+                 console.log(resp);
+             }
+          });
+        }
+
+        $('form[data-form="shipping"]').on("submit",function(){
+          event.preventDefault();
+          var data = $(this).serializeArray();
+          var action = $(this).attr("action");
+          var method = $(this).attr("method");
+
+          var d=new Date();
+
+          var trid="trs-"+d.getTime();
+          data['refid']=trid;
+
+          var tr = "<tr id='"+trid+"'><td>"+data[1]['value']+"</td><td>"+data[2]['value']+"</td><td>"+data[3]['value']+"</td><td>"+data[4]['value']+"</td><td class='tbl-ship-btn'><i class='fa fa-circle-o-notch fa-spin' style='font-size:24px'></i></tr>";
+
+          $(tr).appendTo("#tbl-order-shipping");
+
+          $.ajax({
+             url: action,
+             type: method,
+             dataType:'json',
+             data:$(this).serialize()+"&refid=#"+trid,
+             success:function(result){
+                 if(result.status==200){
+                    console.log(result.refid);
+                    $(result.refid+" .fa-spin").each(function(){
+                      $(this).hide();
+                    });
+                    $(result.refid+" .tbl-ship-btn").each(function(){
+                      $("<a href='javascript:deleteShippingLabel("+result.shippinglabel.id+",'"+result.refid+"')><i class='fa fa-trash'></i></a>").appendTo(this);
+                    });
+                    $('form[data-form="shipping"]').each(function(){
+                      $(this)[0].reset();
+                    });
+                 }
+             },
+             error:function(xhr,resp,text){
+                 console.log(resp);
+             }
+          });
+        })
+    </script>
+    <%
+      }
+    %>  
+  </body>
+</html>
+

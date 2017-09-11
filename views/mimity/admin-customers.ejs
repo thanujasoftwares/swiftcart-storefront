@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head') %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar') %>
+    <%- include('shared/searchbar',{navigation:navigation}) %>
+    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('components/breadcrumb',{navPath:navPath}) %>
+    
+    <!-- Main Content -->
+    <div class="container m-t-3">
+        <div class="row">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <div class="title m-b-2"><span><i class="fa fa-address-book-o"></i>&nbsp;Customers</span></div>
+                <table class="table table-hover">
+                  <tr>
+                    <th>Name</th>
+                    <th>Email Address</th>
+                    <th>Phone Number</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                  </tr> 
+                  <tbody id="tbl-customers">
+                  </tbody> 
+                </table>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 text-center">
+              <button class="btn btn-theme" id="tbl-cst-more-button"> More </button>
+            </div>
+        </div>
+      </div>
+      <!-- End Main Content -->    
+
+    <%- include('shared/footer') %>
+    <%- include('shared/scripts') %>
+    <script type="text/javascript">
+      $(document).ready(function(){
+        var d = new Date();
+        $.getJSON("/admin/customers.json?offset=0&ts="+d.getTime(),function(json){
+          var l=0;
+          if(json.status==200){
+            $(json.customers).each(function(index,element){
+              var tr="<tr>";
+              tr +="<td><a href='/account/"+element['id']+"/profile.html'>"+element['name']+"</a></td>";
+              tr +="<td>"+element['email']+"</td>";
+              tr +="<td>"+element['phonenumber']+"</td>";
+              if(element['customertype']=='c'){
+                tr +="<td>Customer</td>";  
+              }
+              else if(element['customertype']=='g'){
+                tr +="<td>Guest</td>";  
+              }
+              else{
+                tr +="<td>Unknown</td>";  
+              }
+              
+              if(element['isblocked']){
+                tr +="<td>Blocked</td>";
+              }
+              else if(element['isverified']){
+                tr +="<td>Verified</td>";
+              }
+              else{
+                tr +="<td>Not Verified</td>";
+              }
+              $(tr).appendTo("#tbl-customers");
+              l++;
+            });
+  
+            if(l<99){
+              $("#tbl-cst-more-button").hide();
+            }
+          }
+        })
+      })
+    </script>
+  </body>
+</html>

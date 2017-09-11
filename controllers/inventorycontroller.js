@@ -106,9 +106,6 @@ var InventoryController = {
                 delete newinv.id;
                 Inventories.create(newinv).then((invuct)=>{
                     resolve(invuct);
-                    invuct.createProductImage({
-                        
-                    })
                 }).catch((err)=>{
                     reject(err);
                 });
@@ -129,6 +126,18 @@ var InventoryController = {
             }
         })
     },    
+
+    delete:(productid,id) => {
+        return new Promise((resolve,reject)=>{
+            Inventories.findOne({where:{id:id,ProductId:productid}}).then((inv)=>{
+                inv.destroy().then(function(){
+                    resolve("deleted");
+                })
+            }).catch((err)=>{
+                reject(err);
+            });
+        })
+    },
 
     /* RETRIEVE */
     get:(options) => {
