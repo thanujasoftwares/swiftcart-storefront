@@ -1,0 +1,4 @@
+RewriteEngine on
+RewriteRule ^ http://%{HTTP_HOST}:3000%{REQUEST_URI} [P]
+RewriteRule ^ http://%{HTTP_HOST}:3000%{REQUEST_URI} [P]
+RewriteRule /admin/(.*) http://%{HTTP_HOST}:4200%{REQUEST_URI} [P]
