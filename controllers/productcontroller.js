@@ -1,5 +1,7 @@
 'use strict';
 var _ = require("lodash");
+const NodeCache = require( "node-cache" );
+const myCache = new NodeCache( { stdTTL: 600, checkperiod: 0, errorOnMissing: true } );
 
 
 var {Products, Menus, Catalogs, OrderItems, Orders, Ratings, Reviews, Recommendatations, Inventories, ProductImages} = require('../models');
@@ -109,7 +111,11 @@ var ProductController = {
         }else{
             return p;
         }
-    },    
+    }, 
+    
+    /* CACHE */
+
+    
 
     /* CREATE */
     create:(data) => {

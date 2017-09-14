@@ -5,51 +5,40 @@
           <div class="row">
             <div class="col-md-3 col-sm-6">
               <div class="title-footer"><span>About Us</span></div>
+              <!-- Fashion Trends is family owned online store dedicated for Indian Ethic Wears for new borns, infants, teens, young, adult and seniors. We have many varieties  -->
+              
               <ul>
                 <li>
-                  Fashion Trends is family owned online store dedicated for Indian Ethic Wears for new borns, infants, teens, young, adult and seniors. We have many varieties 
+                  <%= siteattributes.abtus.value0 || '' %>
                 </li>
               </ul>
             </div>
             <div class="col-md-3 col-sm-6">
               <div class="title-footer"><span>Information</span></div>
               <ul>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">FAQ</a></li>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">Policy Privacy</a></li>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">Terms and Conditions</a></li>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">Shipping Methods</a></li>
+                <li><i class="fa fa-angle-double-right"></i> <a href="/faq.html">FAQ</a></li>
+                <li><i class="fa fa-angle-double-right"></i> <a href="/privacy.html">Policy Privacy</a></li>
+                <li><i class="fa fa-angle-double-right"></i> <a href="/termsandconditions.html">Terms and Conditions</a></li>
               </ul>
             </div>
             <div class="clearfix visible-sm-block"></div>
             <div class="col-md-3 col-sm-6">
-              <div class="title-footer"><span>Categories</span></div>
-              <ul>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">Cras justo odio</a></li>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">Dapibus ac facilisis in</a></li>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">Morbi leo risus</a></li>
-                <li><i class="fa fa-angle-double-right"></i> <a href="#">Porta ac consectetur ac</a></li>
-              </ul>
-            </div>
-            <div class="col-md-3 col-sm-6">
-              <div class="title-footer"><span>Newsletter</span></div>
-              <p>subscribe with us for more savings, coupons, deals for all occations</p>
-              <div class="input-group">
-                <input class="form-control" type="text" placeholder="Email Address">
-                <span class="input-group-btn">
-                  <button class="btn btn-default subscribe-button" type="button">Subscribe</button>
-                </span>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-3 col-sm-6">
               <div class="title-footer"><span>Our Store</span></div>
               <ul class="footer-icon">
-                <li><span><i class="fa fa-map-marker"></i></span> Bangalore</li>
-                <li><span><i class="fa fa-phone"></i></span> +123-456-789</li>
-                <li><span><i class="fa fa-envelope"></i></span> <a href="mailto:cs@domain.tld">cs@domain.tld</a></li>
+                <li><span><i class="fa fa-map-marker"></i></span> <%= siteattributes.offaddr.value1 %></li>
+                <li><span><i class="fa fa-phone"></i></span><%= siteattributes.offaddr.value4 %></li>
+                <li><span><i class="fa fa-envelope"></i></span> <a href="mailto:<%= siteattributes.offaddr.value6  %>"><%= siteattributes.offaddr.value6 %></a></li>
               </ul>
             </div>
+            <div class="col-md-3 col-sm-6">
+                <div class="title-footer"><span>Technology Partner</span></div>
+                <ul>
+                  <li><a href="#">Thanuja Software and Solutions Private Limited</a></li>
+                </ul>
+              </div>
+              
+          </div>
+          <div class="row">
             <div class="col-md-3 col-sm-6">
               <div class="title-footer"><span>Follow Us</span></div>
               <p>for latest posts, sales events etc on </p>
@@ -63,6 +52,16 @@
             </div>
             <div class="clearfix visible-sm-block"></div>
             <div class="col-md-3 col-sm-6">
+                <div class="title-footer"><span>Newsletter</span></div>
+                <p>subscribe with us for more savings, coupons, deals for all occations</p>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="Email Address">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default subscribe-button" type="button">Subscribe</button>
+                  </span>
+                </div>
+              </div>
+            <div class="col-md-3 col-sm-6">
               <div class="title-footer"><span>Payment Method</span></div>
               <p>Supported by PayTM</p>
               <img src="/images/payment-1.png" alt="Payment-1">
@@ -71,16 +70,10 @@
               <img src="/images/payment-4.png" alt="Payment-4">
               <img src="/images/payment-5.png" alt="Payment-5">
             </div>
-            <div class="col-md-3 col-sm-6">
-              <div class="title-footer"><span>Technology Partner</span></div>
-              <ul>
-                <li><a href="#">Thanuja Softwares and Solutions Private Limited</a></li>
-              </ul>
-            </div>
           </div>
         </div>
         <div class="text-center copyright">
-          Copyright &copy; 2017 Thanuja Software Solutions All right reserved
+          Copyright &copy; 2017 Thanuja Software and Solutions Private Limited All right reserved
         </div>
       </div>
       <!-- End Footer -->
@@ -89,7 +82,7 @@
         <i class="fa fa-angle-double-up"></i>
       </a>
   
-      <div class="chooser chooser-hide">
+      <!-- <div class="chooser chooser-hide">
         <div class="chooser-toggle"><button class="btn btn-warning" type="button"><i class="fa fa-paint-brush bigger-130"></i></button></div>
         <div class="chooser-content">
           <label>Color</label>
@@ -105,5 +98,5 @@
             <option value="rounded">Rounded</option>
           </select>
         </div>
-      </div>      
+      </div>       -->
     </div>

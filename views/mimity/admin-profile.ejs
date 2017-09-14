@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('shared/head') %>
+  <%- include('shared/head',{siteattributes:siteattributes}) %>
 
   <body class="fade-down">
-    <%- include('shared/topbar') %>
-    <%- include('shared/searchbar',{navigation:navigation}) %>
-    <%- include('shared/navbar',{navigation:navigation}); %>
-    <%- include('components/breadcrumb',{navPath:navPath}) %>
+    <%- include('shared/topbar',{siteattributes:siteattributes}) %>
+    <%- include('shared/searchbar',{navigation:navigation,siteattributes:siteattributes}) %>
+    <%- include('shared/navbar',{navigation:navigation,siteattributes:siteattributes}); %>
+    <%- include('components/breadcrumb',{navPath:navPath,siteattributes:siteattributes}) %>
     
     <!-- Main Content -->
     <div class="container m-t-3">
@@ -55,7 +55,7 @@
             </div>                  
             <div id="site-settings" class="tab-pane fade">
               <div class="title m-b-2"><span><i class="fa fa-gears"></i>&nbsp;Site Settings</span></div>
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="title" name="key"/>
                 <label> Title </label>
                 <div class="input-group">
@@ -66,7 +66,7 @@
                 </div>
               </form>
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+              <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
                 <input type="hidden" value="logo" name="key"/>
                 <label> Logo </label>
                 <div class="input-group">
@@ -77,14 +77,14 @@
                 </div>
               </form>              
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="abtus" name="key"/>
                 <label> About Us </label>
                 <textarea class="form-control" type="text" placeholder="About Us" name="value0"><%= siteattributes.abtus.value0 || '' %></textarea><br />
                 <button class="btn btn-primary">Update</button>
               </form>              
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="ccpno" name="key"/>
                 <label> Customer Care Phone Number </label>
                 <div class="input-group">
@@ -95,7 +95,7 @@
                 </div>
               </form>
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="cceaddr" name="key"/>
                 <label> Contact Us Email Address </label>
                 <div class="input-group">
@@ -106,7 +106,7 @@
                 </div>
               </form>  
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="offaddr" name="key"/>
                 <label> Office Address </label>
                   <input class="form-control" type="text" placeholder="Street" value="<%= siteattributes.offaddr.value0 || '' %>" name="value0"/><br />
@@ -115,26 +115,27 @@
                   <input class="form-control" type="text" placeholder="Country" value="<%= siteattributes.offaddr.value3 || '' %>" name="value3"/><br />
                   <input class="form-control" type="text" placeholder="Phonenumber" value="<%= siteattributes.offaddr.value4 || '' %>" name="value4"/><br />
                   <input class="form-control" type="text" placeholder="Postal Code" value="<%= siteattributes.offaddr.value5 || '' %>" name="value5"/><br />
+                  <input class="form-control" type="text" placeholder="Email Address" value="<%= siteattributes.offaddr.value6 || '' %>" name="value6"/><br />
                   <button class="btn btn-primary">Update</button>
               </form>              
             </div>
             <div id="share-settings" class="tab-pane fade">
               <div class="title m-b-2"><span><i class="fa fa-share"></i>&nbsp;Share</span></div>
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="googleadsense" name="key"/>
                 <label> Google Adsense Code </label>
                 <textarea class="form-control" type="file" placeholder="Code"><%= siteattributes.gascode.value0 || '' %></textarea><br />
                 <button class="btn btn-primary">Update</button>
               </form>              
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                   <input type="hidden" value="addcode" name="key"/>
                   <label> Addthis Code </label>
                   <textarea class="form-control" type="file" placeholder="Code" value=""><%= siteattributes.addcode.value0 || '' %></textarea><br />
                   <button class="btn btn-primary">Update</button>
               </form>              
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="fburl" name="key"/>
                 <label> Facebook </label>
                 <div class="input-group">
@@ -145,22 +146,22 @@
                 </div>
               </form>  
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="twurl" name="key"/>
                 <label> Twitter </label>
                 <div class="input-group">
-                  <input class="form-control" type="text" placeholder="url" value="<%= siteattributes.offaddr.value0 || '' %>" />
+                  <input class="form-control" type="text" placeholder="url" value="<%= siteattributes.twurl.value0 || '' %>" />
                   <div class="input-group-btn">
                     <button class="btn btn-primary">Update</button>
                   </div>
                 </div>
               </form>  
               <br />
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="yturl" name="key"/>
                 <label> Youtube </label>
                 <div class="input-group">
-                  <input class="form-control" type="text" placeholder="url" value="<%= siteattributes.offaddr.value0 || '' %>" />
+                  <input class="form-control" type="text" placeholder="url" value="<%= siteattributes.yturl.value0 || '' %>" />
                   <div class="input-group-btn">
                     <button class="btn btn-primary">Update</button>
                   </div>
@@ -171,7 +172,7 @@
             </div>
             <div id="faq-settings" class="tab-pane fade">
               <div class="title m-b-2"><span><i class="fa fa-question-circle"></i>&nbsp;FAQ</span></div>
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq1" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq1.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -183,7 +184,7 @@
               </form>  
               <br />
 
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq2" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq2.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -196,7 +197,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq3" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq3.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -209,7 +210,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq4" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq4.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -222,7 +223,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq5" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq5.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -235,7 +236,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq6" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq6.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -248,7 +249,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq7" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq7.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -261,7 +262,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq8" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq8.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -274,7 +275,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq9" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq9.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -287,7 +288,7 @@
               <br />
 
               
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="faq10" name="key"/>
                 <input class="form-control" type="text" placeholder="Question" value="<%= siteattributes.faq10.value0 || '' %>" /> <br />
                 <div class="input-group">
@@ -303,7 +304,7 @@
             </div>
             <div id="privacy-settings" class="tab-pane fade">
               <div class="title m-b-2"><span><i class="fa fa-user-secret"></i>&nbsp;Privacy Statement</span></div>
-              <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+              <form action="/admin/settings.html" method="post" data-form='set'>
                 <input type="hidden" value="prvstmt" name="key"/>
                 <label> Privacy Statement </label>
                 <textarea class="form-control" placeholder="Paragraph 1" ><%= siteattributes.prvstmt.value0 || '' %></textarea><br />
@@ -317,7 +318,7 @@
             </div>
             <div id="tc-settings" class="tab-pane fade">
                 <div class="title m-b-2"><span><i class="fa fa-legal"></i>&nbsp;Legal Statement </span></div>
-                <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <form action="/admin/settings.html" method="post" data-form='set'>
                     <input type="hidden" value="lgstmt" name="key"/>
                     <label> Terms and Conditions </label>
                     <textarea class="form-control" placeholder="Paragraph 1" ><%= siteattributes.lgstmt.value0 || '' %></textarea><br />
@@ -332,7 +333,7 @@
             
             <div id="tc-settings" class="tab-pane fade">
                 <div class="title m-b-2"><span><i class="fa fa-list-ol"></i>&nbsp;Terms and Conditions </span></div>
-                <form action="/admin/<%= customer.id %>/settings.html" method="post" data-form='set'>
+                <form action="/admin/settings.html" method="post" data-form='set'>
                     <input type="hidden" value="tncstmt" name="key"/>
                     <label> Terms and Conditions </label>
                     <textarea class="form-control" placeholder="Paragraph 1" ><%= siteattributes.tncstmt.value0 || '' %></textarea><br />
@@ -352,7 +353,7 @@
       </div>
       <!-- End Main Content -->    
 
-    <%- include('shared/footer') %>
+    <%- include('shared/footer',{siteattributes:siteattributes}) %>
     <%- include('shared/scripts') %>
 
     <script type="text/javascript">
@@ -380,6 +381,7 @@
                 alert("Error! Try again");
             },
             success: function(response) {
+                window.location.reload();
                 $("#status").empty().text(response);
                     $(response.refid+" .fa-spin").hide();
                     $(response.refid+" input[name='ts']").attr("value",(new Date()).getTime());

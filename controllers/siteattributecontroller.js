@@ -56,10 +56,12 @@ var SiteAttributeController = {
                     siteattributes[attribute.key]=JSON.parse(JSON.stringify(attribute));
                 });
                 console.log(siteattributes);
+                siteattributes['color']={
+                    'id':-1,
+                    'key':'color',
+                    'value0':'indigo'
+                };
                 resolve(siteattributes);
-                
-
-
             }).catch((err) => {
                 reject("site attributes not found");
             })

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('shared/head') %>
+  <%- include('shared/head',{siteattributes:siteattributes}) %>
 
   <body class="fade-down">
-    <%- include('shared/topbar') %>
-    <%- include('shared/searchbar',{navigation:navigation}) %>
-    <%- include('shared/navbar',{navigation:navigation}); %>
+    <%- include('shared/topbar',{siteattributes:siteattributes}) %>
+    <%- include('shared/searchbar',{navigation:navigation, siteattributes:siteattributes}); %>
+    <%- include('shared/navbar',{navigation:navigation, siteattributes:siteattributes} ); %>
     <%- /* include('components/carousel') */%>
     
     <!-- Main Content -->
@@ -59,7 +59,7 @@
     </div>
     <!-- End Main Content -->
 
-    <%- include('shared/footer') %>
+    <%- include('shared/footer',{siteattributes:siteattributes}) %>
     <%- include('shared/scripts') %>
   </body>
 </html>

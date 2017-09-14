@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('shared/head') %>
+  <%- include('shared/head',{siteattributes:siteattributes}) %>
 
   <body class="fade-down">
-    <%- include('shared/topbar') %>
-    <%- include('shared/searchbar',{navigation:navigation}) %>
-    <%- include('shared/navbar',{navigation:navigation}); %>
-    <%- include('components/breadcrumb',{navPath:navPath}) %>
+    <%- include('shared/topbar',{siteattributes:siteattributes}) %>
+    <%- include('shared/searchbar',{navigation:navigation,siteattributes:siteattributes}) %>
+    <%- include('shared/navbar',{navigation:navigation,siteattributes:siteattributes}); %>
+    <%- include('components/breadcrumb',{navPath:navPath,siteattributes:siteattributes}) %>
         
     <div class="container m-t-3">
         <div class="row">
@@ -17,7 +17,7 @@
             <p>We are processing your order and will be contact you at <i id="thk-cust-email"></i> shortly on this order.</p>
         </div>
     </div>
-    <%- include('shared/footer') %>
+    <%- include('shared/footer',{siteattributes:siteattributes}) %>
     <%- include('shared/scripts') %>
     <script type="text/javascript">
       function getParameters()

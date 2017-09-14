@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('shared/head') %>
+  <%- include('shared/head',{siteattributes:siteattributes}) %>
 
   <body class="fade-down">
-    <%- include('shared/topbar') %>
-    <%- include('shared/searchbar',{navigation:navigation}) %>
-    <%- include('shared/navbar',{navigation:navigation}); %>
-    <%- include('components/breadcrumb',{navPath:navPath}) %>
+    <%- include('shared/topbar',{siteattributes:siteattributes}) %>
+    <%- include('shared/searchbar',{navigation:navigation,siteattributes:siteattributes}) %>
+    <%- include('shared/navbar',{navigation:navigation,siteattributes:siteattributes}); %>
+    <%- include('components/breadcrumb',{navPath:navPath,siteattributes:siteattributes}) %>
     
     <!-- Main Content -->
     <div class="container m-t-3">
@@ -154,7 +154,7 @@
                 </div>
             </div>
         </div>
-        <%- include('shared/footer') %>
+        <%- include('shared/footer',{siteattributes:siteattributes}) %>
         <%- include('shared/scripts') %>
         <script type="text/javascript">
             $(document).ready(function(){

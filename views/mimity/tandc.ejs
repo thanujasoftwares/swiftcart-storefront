@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('shared/head',{siteattributes:siteattributes}) %>
+
+  <body class="fade-down">
+    <%- include('shared/topbar',{siteattributes:siteattributes}) %>
+    <%- include('shared/searchbar',{navigation:navigation,siteattributes:siteattributes}) %>
+    <%- include('shared/navbar',{navigation:navigation,siteattributes:siteattributes}); %>
+    <%- include('components/breadcrumb',{navPath:navPath,siteattributes:siteattributes}) %>
+        
+    <div class="container m-t-3">
+        <div class="row">
+            <div class="col-sm-12">
+              <div class="title m-b-2"><span><i class="fa fa-list-ol"></i>&nbsp;Terms And Conditions</span></div>
+            </div>
+              <div class="col-offset-sm-3 col-sm-8">
+                  <%= siteattributes.tncstmt.value0 %>
+                  <%= siteattributes.tncstmt.value1 %>
+                  <%= siteattributes.tncstmt.value2 %>
+                  <%= siteattributes.tncstmt.value3 %>
+                  <%= siteattributes.tncstmt.value4 %>
+                  <%= siteattributes.tncstmt.value5 %>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <%- include('shared/footer',{siteattributes:siteattributes}) %>
+    <%- include('shared/scripts') %>
+  </body>
+</html>
