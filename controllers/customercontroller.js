@@ -137,12 +137,12 @@ var CustomerController = {
         return new Promise((resolve,reject)=>{
             var options={
                 email:undefined,
-                hashcode:'password123',
+                hashcode:undefined,
                 isdeleted:false
             };
             _.map(values,(value,key)=>{
                 switch(key){
-                    case 'eaddr':options['email']=value;break;
+                    case 'eaddr':options['email']=value.toLowerCase();break;
                     case 'paswd':options['hashcode']=value;break;
                 }
             });
@@ -357,6 +357,24 @@ var CustomerController = {
                 reject(err);
             })            
         })
+    },
+    updatePassword: (id,values) =>{
+        return new Promise((resolve,reject)=>{
+            Customers.findOne({
+                where:{
+                    id:id,
+                    hashcode:values.passwd
+                }
+            }).then((customer)=>{
+                customer.update({hashcode:values.newpasswd}).then((cst)=>{
+                    resolve(cst);
+                }).catch((err)=>{
+                    reject(err);
+                })
+            }).catch((err)=>{
+                reject(err);
+            })  
+        })    
     }
 }
 

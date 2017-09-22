@@ -85,6 +85,21 @@ function mapGender(gendergroup){
     return gender;
 }
 
+function mapProductGroup(productgroup){
+    productgroup = productgroup.toLowerCase();
+    
+    switch(productgroup){
+        case 'featured': productgroup = '"Products"."isfeatured"=true'; break;
+        case 'new': productgroup = '"Products"."isnew"=true'; break;
+        case 'sale': productgroup = '"Products"."isdeal"=true'; break;
+        case 'deal': productgroup = '"Products"."isdeal"=true'; break;
+        case 'bestseller': productgroup = '"Products"."isbestseller"=true'; break;
+        default: productgroup = undefined;
+    }
+
+    return productgroup;
+}
+
 router.route('/')
 .get(function(req,res){
     var whr = '';
@@ -135,6 +150,48 @@ router.route('/index.html')
     })
 });
 
+router.route('/:productgroup.html')
+.get(function(req,res,next){
+
+    var productgroup = mapProductGroup(req.params.productgroup);   
+
+    if(productgroup == undefined){
+        next();
+        return;
+    }
+
+    var whr = '';
+    if(req.session['ctype'] && req.session['ctype']=='a'){
+        whr = '"Products"."isactive" in (true,false) and ';
+    }else{
+        whr = ' "Products"."isactive" = true and '
+    }
+
+    whr += productgroup;
+    
+    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr), SiteattributeController.getAll()])
+    .then((data)=>{
+        res.render('products', {
+            'navigation':data[0],
+            'navPath':[
+                {
+                    title:'Home',
+                    url:'/',
+                    active:false
+                },                
+                {
+                    title:req.params.productgroup,
+                    url:'/'+req.params.productgroup+'.html',
+                    active:true
+                }
+            ],
+            'pageTitle':req.params.productgroup,
+            'products':ProductController.prepareForNavigation(data[1]),
+            'siteattributes':data[2]           
+        });
+    })
+});
+
 router.route('/:agegrouptitle.html')
 .get(function(req,res,next){
     var age=undefined;
@@ -151,7 +208,7 @@ router.route('/:agegrouptitle.html')
         whr += ' and "Products"."isactive" = true '
     }
 
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr)])
+    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('products', {
             'navigation':data[0],
@@ -348,7 +405,6 @@ router.route('/:agegrouptitle/:category/:subcategory/:gendergroup/:id/:sku/:titl
 .get(function(req,res){
     Promise.all([ProductController.getCategories(0),getProduct(req.params.id,true), SiteattributeController.getAll()])
     .then((data)=>{
-        
         data[1]=ProductController.prepareForNavigation(data[1]);
         res.render('product',{
             'navigation':data[0],
@@ -410,7 +466,7 @@ router.route('/cart.html')
                     url:'/cart.html',
                     active:true
                 }],
-            'customerId':cid,
+            'customerId':req.session[req.sessionID]  || 0,
             'siteattributes':data[1]  
         });        
     })
@@ -421,6 +477,8 @@ router.route('/checkout.html')
     CustomerController.checkout(req.body).then((result)=>{
         OrderController.create(result.customer,result.customeraddressbooks,req.body).then((result)=>{
             res.status(200).json({status:200,trackingnumber:result.order.id+'-'+result.customer.id+'-'+result.order.TrackingNumber, email:result.customer.email, phonenumber: result.customer.phonenumber});
+        }).catch((err)=>{
+            res.status(200).json({status:404,message:'Unable to place your order'});
         })
     }).catch((err)=>{
         console.log(err);
@@ -565,7 +623,7 @@ router.route('/login.html')
 .post(function(req,res){
     CustomerController.register(req.body).then((customer)=>{
         var cst=JSON.parse(JSON.stringify(customer));
-        req.session[req.sessionID]=cst;
+        req.session[req.sessionID]=cst.id;
         delete cst['createdAt'];
         delete cst['updatedAt'];
         delete cst['isblocked'];
@@ -622,8 +680,8 @@ router.route('/login.html')
     })
 })
 .delete(function(req,res){
-    req.session[req.sessionID] = undefined;
-    req.session['ctype']='a';
+    req.session[req.sessionID] = 0;
+    req.session['ctype']='c';
     res.status(200).json({status:302,redirect:'/'});
 })
 
@@ -711,7 +769,7 @@ router.route('/guest/checkout.html')
                     url:'/checkout.html',
                     active:true
                 }],
-            'customerId':cid,
+            'customerId':0,
             'states':ProductController.getIndiaStates(),
             // {key:'paytm', name:'PayTm'},{key:'actfr',name:'A/C Tranfer'},
             'paytypes':[{key:'cod',name:'Cash On Delivery'}],
@@ -753,6 +811,36 @@ router.route('/guest/orders/:orderid-:cid-:trackingnumber.html')
 
 /* CUSTOMER */
 
+router.route('/account/:customerId/*')
+.get(function(req,res,next){
+    if(req.session['ctype']=='a'){
+        next();
+    }
+    else if (req.session[req.sessionID] == undefined  || req.session[req.sessionID]!= req.params.customerId) {
+        Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+        .then((data)=>{
+            res.render('login',{
+                'navigation':data[0],
+                'navPath':[
+                    {
+                        title:'Home',
+                        url:'/',
+                        active:false
+                    },
+                    {
+                        title:'Login',
+                        url:'/login.html',
+                        active:true
+                    }],
+                'ischeckout':false,
+                'siteattributes':data[1]
+            });        
+        })
+    }else{
+        next();
+    }
+});
+
 router.route('/account/:customerId/checkout.html')
 .get(function(req,res){
     var cid=0;
@@ -785,7 +873,7 @@ router.route('/account/:customerId/checkout.html')
                 'states':ProductController.getIndiaStates(),
                 //{key:'paytm', name:'PayTm'},{key:'actfr',name:'A/C Tranfer'},
                 'paytypes':[{key:'cod',name:'Cash On Delivery'}],
-                'siteattributes':data[1]
+                'siteattributes':data[3]
             });        
         })
     }
@@ -861,7 +949,6 @@ router.route('/account/:customerid/address.html')
 
 router.route('/account/:customerid/orders/:orderid-:cid-:trackingnumber.html')
 .get(function(req,res){
-    if (req.session && req.session[req.sessionID] && req.session[req.sessionID]==req.params.customerid) {
         Promise.all([ProductController.getCategories(0), CustomerController.getProfile(req.params.customerid), OrderController.getOrder(req.params.customerid,req.params.orderid), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('invoice',{
@@ -897,27 +984,6 @@ router.route('/account/:customerid/orders/:orderid-:cid-:trackingnumber.html')
             console.log(err);
             res.render('404');
         })
-    }else{
-        Promise.all([ProductController.getCategories(0)])
-        .then((data)=>{
-            res.render('login',{
-                'navigation':data[0],
-                'navPath':[
-                    {
-                        title:'Home',
-                        url:'/',
-                        active:false
-                    },
-                    {
-                        title:'Login',
-                        url:'/login.html',
-                        active:true
-                    }],
-                'ischeckout':false,
-                'siteattributes':data[1]
-            }); 
-        });
-    }
 });
 
 
@@ -1049,21 +1115,35 @@ router.route('/admin/settings.html')
             key = req.body.key || undefined;
             
             if(key){
-                SiteattributeController.get(key)
-                .then((siteattribute) =>{
-                    SiteattributeController.update(siteattribute.id, siteattribute.key, req.body)
-                    .then((attribute)=>{
-                        res.json({status:200, refid: req.body.refid});
-                    })
-                }).catch((err)=>{
-                    SiteattributeController.create(req.body)
-                    .then((data)=>{
-                        res.json({status:200, refid:req.body.refid||""})
+
+                if(key=='passwd'){
+                    CustomerController.updatePassword(req.session[req.sessionID],{
+                        passwd: req.body.value0 || undefined,
+                        newpasswd: req.body.value1 || undefined
+                    }).then((data)=>{
+                        res.json({status:302, redirect:'/admin/setting.html'})
                     }).catch((err)=>{
                         console.log(err);
-                        res.json({status:500, refid:req.body.refid||""})
+                        res.json({status:500, redirect:'/admin/setting.html'})
                     })
-                })
+
+                }else{
+                    SiteattributeController.get(key)
+                    .then((siteattribute) =>{
+                        SiteattributeController.update(siteattribute.id, siteattribute.key, req.body)
+                        .then((attribute)=>{
+                            res.json({status:200, refid: req.body.refid});
+                        })
+                    }).catch((err)=>{
+                        SiteattributeController.create(req.body)
+                        .then((data)=>{
+                            res.json({status:200, refid:req.body.refid||""})
+                        }).catch((err)=>{
+                            console.log(err);
+                            res.json({status:500, refid:req.body.refid||""})
+                        })
+                    })
+                }
             }else{
                 res.json({status:500, refid:req.body.refid||""})
             }
@@ -1273,10 +1353,11 @@ router.route('/admin/product/new.html')
                     },
                     {
                         title:'newproduct',
-                        url:'/admin/newproduct.html',
+                        url:'/admin/product/new.html.html',
                         active:true
                     },
-                    ]
+                    ],
+                'siteattributes':data[1]
             });        
         }).catch((err)=>{
             console.log(err);
@@ -1285,9 +1366,11 @@ router.route('/admin/product/new.html')
 })
 .post(function(req,res){
     console.log(req.body);
-    ProductController.create(req.body).then((product)=>{
-        console.log(product.dataValues);
-        res.status(200).json({status:200,products:product.dataValues});
+    ProductController.create(req.body).then((newproduct)=>{
+        ProductController.get({id:newproduct.id}).then((products)=>{
+            data = ProductController.prepareForNavigation(products);
+            res.status(200).json({status:302,redirect:'/'+data[0].agegrouptitle+'/'+data[0].category+'/'+data[0].subcategory+'/'+data[0].gendergroup+'/'+data[0].id+'/'+data[0].sku+'/'+data[0].name+'.html'});
+        })        
     }).catch((err)=>{
         console.log(err);
         res.status(500).json({status:500,products:[]});
@@ -1318,7 +1401,8 @@ router.route('/admin/product/:id/edit.html')
                     active:false
                 },
                 ],
-            'product':data[1][0]
+            'product':data[1][0],
+            'siteattributes':data[2]
         });        
     }).catch((err)=>{
         console.log(err);
@@ -1326,9 +1410,11 @@ router.route('/admin/product/:id/edit.html')
     }) 
 })
 .put(function(req,res){
-    console.log(req.body);
     ProductController.update(req.params.id,req.body).then((product)=>{
-        res.status(200).json({status:302});
+        ProductController.get({id:req.params.id}).then((products)=>{
+            data = ProductController.prepareForNavigation(products);
+            res.status(200).json({status:302,redirect:'/'+data[0].agegrouptitle+'/'+data[0].category+'/'+data[0].subcategory+'/'+data[0].gendergroup+'/'+data[0].id+'/'+data[0].sku+'/'+data[0].name+'.html'});
+        })        
     }).catch((err)=>{
         res.status(500).json({status:500,products:[]});
     });

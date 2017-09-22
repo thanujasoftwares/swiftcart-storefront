@@ -55,7 +55,6 @@
               <% if(isadmin){ %>
                 <h5><div class="text-primary">Active: <%= product.isactive ? 'Yes' : 'No' %></div></h5>
               <% } %>
-                  
             </div>
 
                           
@@ -66,7 +65,7 @@
                       <td>SKU or Barcode</td>
                       <td>
                           <%= product.sku %>
-                  </td>
+                      </td>
                   </tr>
                 <%
                 if(product.Inventories.length  > 0) {
@@ -74,86 +73,97 @@
                 <tr>
                   <td>Size</td>
                   <td>
-                    <select class="selectpicker" data-width="80px" data-picker='prd-size'>
-                      <option value="default"> Size </option>
+                    <select class="selectpicker" data-width="80px" data-formpicker='prd-size'>
+                      <option value="<%= product.id %>-default"> Size </option>
                       <%
                         product.Inventories.forEach(function(inventory){
                           inventory.items.forEach(function(item){
                       %>
-                          <option value='<%= item.id %>-<%= item.size %>' ><%= item.size  %></option>
+                          <option value='<%= product.id %>-<%= item.size %>' ><%= item.size  %></option>
                       <%
                         }) })
                       %>
                       </select>
                     </td>
                 </tr>
-                <tr>
-                    <td>Price</td>
-                    <td>
-                        <span class="label label-warning arrowed" data-option="prd-size" data-option-value="default">Select Size</span>
-                          <%
-                            product.Inventories.forEach(function(inventory){
-                              inventory.items.forEach(function(item){
-                          %>
-                            <div data-option='prd-size' data-option-value='<%= item.id %>-<%= item.size %>' class="price" id='prd-<%= product.sku %>-<%= item.size %>'>
-                              <div><%= item.unitprice - (item.unitprice * item.discount*0.01) %><span class="label label-default arrowed">-<%= item.discount %>%</span></div>
-                              <span class="price-old"><%= item.unitprice %></span>
-                            </div>
-                          <% }) }) %>
-                        
-                    </td>
-                  </tr>
-                <tr>
-                <td>Quantity</td>
-                  <td>
-                      <span class="label label-warning arrowed" data-option="prd-size" data-option-value="default">Select Size</span>
-                      <%
-                        product.Inventories.forEach(function(inventory){
-                          inventory.items.forEach(function(item){
-                      %>
-                        <div class="input-qty" data-option='prd-size' data-option-value='<%= item.id %>-<%= item.size %>' >
-                          <input data-picker='prd-quantity' id='prd-<%= product.sku %>-<%= item.size %>-qty-value' type="text" value="1" class="form-control text-center" name="quantity" />
-                        </div>
-                        <%
-                          })
-                        })
-                      %>
-                  </td>
-                </tr>
-                <% } else { %>
+                </tbody>
+                <tbody id="<%= product.id %>-default">
                   <tr>
-                    <td> Size </td>
-                    <td> <label class="text-danger"> Out of stock </label </td>
+                      <td>Price</td>
+                      <td><span class="label label-warning arrowed">Please Select Size</span></td>                      
                   </tr>
-                <% } %>  
-                <tr>
-                  <td></td>
-                  <td>
-                    <input type="hidden" value="default" id="prd-size" data-cart-attribute='size'/>
-                    <input type="hidden" value='<%= product.sku %>' id="prd-sku" data-cart-attribute='sku'/>
-                    <input type="hidden" value="0" id="prd-price" data-cart-attribute='price'/>
+                  <tr>
+                      <td>Quantity</td>
+                      <td><span class="label label-warning arrowed">Please Select Size</span></td>                      
+                  </tr>
+                </tbody>
+                <%
+                  product.Inventories.forEach(function(inventory){
+                    inventory.items.forEach(function(item){
+                %>
+                <tbody class="hide" id="<%= product.id %>-<%= item.size %>">
+                    <input type="hidden" value="<%= item.id %>" data-cart-attribute='invid'/>
+                    <input type="hidden" value="<%= item.size %>" data-cart-attribute='size'/>
+                    <input type="hidden" value='<%= product.sku %>' data-cart-attribute='sku'/>
+                    <input type="hidden" value="<%= item.unitprice - (item.unitprice * item.discount*0.01) %>" id="prd-price" data-cart-attribute='price'/>
                     <input type="hidden" value="1" id="prd-quantity" data-cart-attribute='qty'/>
-                    <input type="hidden" value="/" id="prd-url" data-cart-attribute='url'/>
                     <input type="hidden" value='<%= product.id %>' id="prd-pid" data-cart-attribute='pid'/>
                     <input type="hidden" value='<%= product.name %>' id="prd-name" data-cart-attribute='name'/>
                     <% if (product.ProductImages && product.ProductImages.length>0) { %>
-                        <input type="hidden" value='<%= product.ProductImages[0].path %><%= product.ProductImages[0].sm %>' id="prd-img" data-cart-attribute='img'/>
-                      <% } else { %>
+                      <input type="hidden" value='<%= product.ProductImages[0].path %><%= product.ProductImages[0].sm %>' id="prd-img" data-cart-attribute='img'/>
+                    <% } else { %>
                         <input type="hidden" value='/images/demo/polo1.jpg' id="prd-img" data-cart-attribute='img'/>
                     <% }%>
-
+                    <tr>
+                        <td>Price</td>
+                        <td>
+                            <div class="price">
+                              <div><%= item.unitprice - (item.unitprice * item.discount*0.01) %><span class="label label-default arrowed">-<%= item.discount %>%</span></div>
+                              <span class="price-old"><%= item.unitprice %></span>
+                              <span><%=item.instock - item.reserved %></span>
+                            </div>
+                      </td>
+                    </tr>
                     <%
-                      product.Inventories.forEach(function(inventory){
-                        inventory.items.forEach(function(item){
+                      if(item.instock - item.reserved > 0){
                     %>
-                        <button data-picker='prd-price' data-picker-value='<%= item.unitprice - (item.unitprice * item.discount*0.01) %>' data-option='prd-size' data-option-value='<%= item.id %>-<%= item.size %>' class="btn btn-theme m-b-1 add-to-cart" type="button"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                    <tr>
+                      <td>Quantity</td>
+                      <td>
+                          <div class="input-qty" >
+                            <input type="text" value="1" class="form-control text-center" name="quantity" />
+                          </div>
+                      </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                          <button data-form="<%= product.id %>-<%= item.size %>" class="btn btn-theme m-b-1 add-to-cart" type="button"><i class="fa fa-shopping-cart"></i> Add to Cart</button>
+                        </td>  
+                    </tr>
+                        <%
+                      } else { 
+                    %>
+                    <tr>
+                        <td> Quantity </td>
+                        <td> <label class="text-danger"> Out of stock </label </td>
+                    </tr>
                     <%
-                        })
-                      })
+                      }
                     %>
-                  </td>
+                </tbody>
+                <%
+                    })
+                  })
+                } else {
+                %>
+                <tr>
+                    <td> Quantity </td>
+                    <td> <label class="text-danger"> Out of stock </label </td>
                 </tr>
-              </tbody>
+                <%
+                  }
+                %>
             </table>
           </div>
 
@@ -269,6 +279,7 @@
                       
                   <form action="/admin/product/<%=product.id%>/inventory/<%=item.id%>.html" method="PUT"  id="frm-edt-inv-<%=item.id%>" data-form="inv">
                     <input type="hidden" name="productid" value="<%= product.id %>" />
+                    <input type="hidden" name="invid" value="<%= product.id %>" />
                     <table class="table table-bordered">
                       <tbody>
                         <tr>

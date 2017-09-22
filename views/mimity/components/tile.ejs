@@ -1,7 +1,7 @@
 <div class='<%= tileClass %> box-product-outer'>
     <div class="box-product">
         <div class="img-wrapper">
-            <a style="min-height:240px;vertical-align:middle" href='/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html'>
+            <a style="height:240px;vertical-align:middle" href='/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html'>
                 <% if (product.imagepath){ %>
                 <img  alt="<%= product.name %>" src='<%= product.imagepath %><%= product.lg %>'>
                 <% } else { %>
@@ -25,16 +25,21 @@
                 <% }  %>
                 <span class="label-tags"><span class="label label-primary arrowed-right"><%= product.agegrouptitle %></span></span>
             </div>
-            <div class="option">
-                <a href="#" data-toggle="tooltip" title="Add to Cart"><i class="fa fa-shopping-cart"></i>&nbsp;</a>
-                <!-- <a href="#" data-toggle="tooltip" title="Add to Compare"><i class="fa fa-align-left"></i></a>
-                <a href="#" data-toggle="tooltip" title="Add to Wishlist" class="wishlist"><i class="fa fa-heart"></i></a> -->
-            </div>
         </div>
-        <h6><a href="detail.html"><%= product.name %></a></h6>
+        <h6 style="height:60px;overflow-y:hidden;"><a href='/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html' title="<%= product.name %>"><%= product.name %></a></h6>
         <div class="price">
-        <div><%= product.unitprice - (product.unitprice*product.discount/100) %><span class="label-tags"><span class="label label-default">-<%= product.discount %>%</span></span></div>
-        <span class="price-old"><%= product.unitprice %></span>
+        <%
+        if(product.discount>0){
+        %>
+            <div class="text-primary"><%= product.unitprice - (product.unitprice*product.discount/100) %>&nbsp;<span class="label-tags"><span class="label label-default">&nbsp;-<%= product.discount %>%</span></span></div>
+            <span class="price-old text-danger"><%= product.unitprice %></span>
+        <%
+        }else {
+        %>
+            <span class="text-primary"><%= product.unitprice %></span>
+        <%
+        }
+        %>
         </div>
         <div class="rating">
             <i class="fa fa-star"></i>

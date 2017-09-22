@@ -1,6 +1,6 @@
 'use strict';
 var _ = require("lodash");
-
+ 
 var {Products, Menus, Catalogs, OrderItems, Orders, Ratings, Reviews, Recommendatations, Inventories} = require('../models');
 
 var InventoryController = {
@@ -41,22 +41,22 @@ var InventoryController = {
                     //     obj.sku = value;
                     // break;
                     case 'unitprice':
-                        obj.unitprice = value;
+                        obj.unitprice = parseFloat(value);
                     break;
                     case 'discount':
-                        obj.discount = value;
+                        obj.discount = parseFloat(value);
                     break;
                     case 'color':
                         obj.color = value;
                     break;
                     case 'instock':
-                        obj.instock = value;
+                        obj.instock = parseFloat(value);
                     break;
                     case 'ordered':
-                        obj.ordered = value;
+                        obj.ordered = parseFloat(value);
                     break;
                     case 'reserved':
-                        obj.reserved = value;
+                        obj.reserved = parseFloat(value);
                     break;
                     case 'size':
                         obj.size = value;
@@ -103,7 +103,14 @@ var InventoryController = {
         return new Promise((resolve,reject)=>{
             var newinv=InventoryController._mapColumn(data);
             if(newinv){
-                delete newinv.id;
+                delete newinv['id']
+                newinv['productid'] = newinv['productid'] || undefined;
+                newinv['size'] = newinv['size'] || undefined;
+                newinv['unitprice'] = newinv['unitprice'] || undefined;
+                newinv['discount'] = newinv['discount'] || undefined;
+                newinv['instock'] = newinv['instock'] || undefined;
+                newinv['reserved'] = newinv['reserved'] || undefined;
+
                 Inventories.create(newinv).then((invuct)=>{
                     resolve(invuct);
                 }).catch((err)=>{
@@ -159,7 +166,19 @@ var InventoryController = {
                 reject(err);
             })
         })
-    }, 
+    },
+
+    // check: (inventories) => {
+    //     _.map(inventories,(inventory,index) =>{
+    //         rc.get("inv:"+inventory.id,function(err,value){
+    //             if(value==null){
+    //                 rc.set("inv:"+inventory.id,(inventory.instock - inventory.reserved));
+    //             }else{
+    //                 inventories[index][instock] = value;
+    //             }
+    //         })
+    //     });
+    // },
 
     /* HELPER FUNCTIONS */
 

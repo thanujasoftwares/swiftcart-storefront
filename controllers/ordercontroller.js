@@ -2,6 +2,8 @@
 var _ = require("lodash");
 
 var {Orders,OrderItems, OrderAddressBooks, Products, ProductImages, CustomerAddressBooks, OrderShipments} = require('../models');
+var redis = require('redis');
+var rc = new redis.createClient();
 
 var OrderController = {
     _mapValuesToOrder:(values) =>{
@@ -87,7 +89,19 @@ var OrderController = {
                 reject(err);
             })
         })
-    },    
+    },  
+    updateInventory:(orderitem) =>{
+        return new Promise((resolve,reject)=>{
+            rc.get("inv:"+orderitem.invid,function(err,value){
+                if(value==null || value <=0){
+                    reject("Inventory Error");
+                }else{
+                    rc.set("inv:"+orderitem.invid, parseInt(value)-parseInt(orderitem.qty));
+                    resolve("Inventory Updated");
+                }
+            });
+         });
+    },
     create:(customer,customeraddressbook,orders)=>{
         return new Promise((resolve,reject)=>{
             var totalprice=0;
@@ -105,7 +119,7 @@ var OrderController = {
                 'totalprice':totalprice,
                 'totaldiscount':totaldiscount,
                 'discountcode':discountcode,
-                'isreceived':true,
+                'isreceived':false,
                 'token':token
             }).then((order) => {
                 var oitems=[]
@@ -115,6 +129,7 @@ var OrderController = {
                     orderitem['unitprice']=orderitem.price || undefined;
                     orderitem['quantity']=orderitem.qty || 0;                    
                     oitems.push(OrderController.addOrderItem(order,orderitem));
+                    oitems.push(OrderController.updateInventory(orderitem));
                 });
 
                 oitems.push(OrderController.addOrderAddress(order,{

@@ -1,7 +1,9 @@
 'use strict';
 var _ = require("lodash");
-const NodeCache = require( "node-cache" );
-const myCache = new NodeCache( { stdTTL: 600, checkperiod: 0, errorOnMissing: true } );
+// const NodeCache = require( "node-cache" );
+// const myCache = new NodeCache( { stdTTL: 600, checkperiod: 0, errorOnMissing: true } );
+var redis = require('redis');
+var rc = new redis.createClient();
 
 
 var {Products, Menus, Catalogs, OrderItems, Orders, Ratings, Reviews, Recommendatations, Inventories, ProductImages} = require('../models');
@@ -206,12 +208,9 @@ var ProductController = {
                                     switch(v){
                                         case 'inventory':
                                         includes.push({
-                                            model:Inventories,
-                                            include:[{
-                                                model:ProductImages
-                                            }]
+                                            model:Inventories
                                         });
-                                    break;
+                                        break;
                                         case 'productimages':
                                             includes.push({
                                                 model:ProductImages
@@ -275,7 +274,12 @@ var ProductController = {
                 ,where:prodwhr
             }).then((products)=>{
                 if(products.length > 0){
-                    resolve(products);
+                    ProductController.prepare(products).then((products)=>{
+                        resolve(products);
+                    }).catch((err)=>{
+                        console.log(err);
+                        reject(err);
+                    });
                 }else{
                     reject("No product is found");
                 }
@@ -302,11 +306,34 @@ var ProductController = {
                         if(item.agegroup==age){
                             uniqCat.push(item.category);
                             uniqSub.push(item.subcategory);
-                            if(item.category != prevCat){
+
+                            item.category = (item.category.trim()).toLowerCase();
+                            item.subcategory = (item.category.trim()).toLowerCase();
+                            
+                            item.category = item.category.charAt(0).toUpperCase() + item.category.slice(1)
+                            item.subcategory = item.subcategory.charAt(0).toUpperCase() + item.subcategory.slice(1)
+                            
+                            var chkCatInd = -1;
+                            var chkCatSubInd = -1;
+                            _.forEach(nav,(navitem,index)=>{
+                                if(item.category == navitem.category){
+                                    chkCatInd = index;
+                                   _.forEach(navitem.subcategory,(subitem,sindex)=>{
+                                       if(subitem == item.subcategory){
+                                        chkCatSubInd == sindex;
+                                       }
+                                   }) 
+                                }
+                            })
+
+                            if(chkCatInd == -1 && chkCatSubInd == -1){
                                 nav.push({category:item.category,subcategory:[]});
-                                prevCatInd++;
+                                var l = (nav.length - 1);
+                                nav[l]['subcategory'].push(item.subcategory);
+                            }else if(chkCatInd >= 0 && chkCatSubInd == -1){
+                                nav[chkCatInd]['subcategory'].push(item.subcategory);
                             }
-                            nav[prevCatInd]['subcategory'].push(item.subcategory);
+
                         }
                     });
 
@@ -403,7 +430,13 @@ var ProductController = {
             sql = sql +" and "+where;
             
             return Products.query(sql).then((products)=>{
-                resolve(products)
+                // resolve(products);
+                ProductController.prepare(products).then((products)=>{
+                    resolve(products);
+                }).catch((err)=>{
+                    console.log(err);
+                    reject(err);
+                });                
             }).catch((err)=>{
                 reject(err);
             })
@@ -438,6 +471,69 @@ var ProductController = {
     /**
      * This helper function prepare Product Object ready to display on webpage
      */
+
+    _mapInventoryItem:(inventoryitem) => {
+        return new Promise((resolve,reject)=>{
+            rc.get("inv:"+inventoryitem.id,function(err,value){
+                if(err){
+                    reject(err);
+                    return;
+                }
+                if(value==null){
+                    rc.set("inv:"+inventoryitem.id,inventoryitem.instock);
+                }else{
+                    inventoryitem.instock = parseInt(value);
+                }
+                resolve(inventoryitem);
+            });
+        })
+    },    
+
+    prepare:(obj)=>{
+        return new Promise((resolve,reject)=>{
+            var inventoryPromises = [];
+            var products = JSON.parse(JSON.stringify(obj));
+            _.map(products,function(product,index){
+                product.agegroup=product.agegroup.trim();
+                switch(product.agegroup){
+                    case 'n': products[index]['agegrouptitle']='Newborn'; break;
+                    case 'i': products[index]['agegrouptitle']='Infant'; break;
+                    case 'k': products[index]['agegrouptitle']='Kids'; break;
+                    case 't': products[index]['agegrouptitle']='Teens'; break;
+                    case 'y': products[index]['agegrouptitle']='Young'; break;
+                    case 'a': products[index]['agegrouptitle']='Adult'; break;
+                    case 's': products[index]['agegrouptitle']='Seniors'; break;
+                }
+                products[index]['agegroup']=product.agegroup;
+                switch(product.gender){
+                    case 'f': products[index]['gendergroup']='female'; break;
+                    case 'u': products[index]['gendergroup']='unisex'; break;
+                    case 'm': products[index]['gendergroup']='male'; break;
+                }
+                products[index]['agegroup']=product.agegroup;
+                if(product['Inventories'] && product['Inventories'].length > 0){
+                    _.map(product['Inventories'],(inventoryitem) => {
+                        inventoryitem.ProductIndex = index;
+                        inventoryPromises.push(ProductController._mapInventoryItem(inventoryitem));
+                    });
+                }                    
+            });
+
+            Promise.all(inventoryPromises).then((invitems)=>{
+                _.forEach(invitems,(inventoryitem)=>{
+                    var ProductIndex = inventoryitem.ProductIndex;
+                    products[ProductIndex]['Inventories'] = [];
+                    products[ProductIndex]['Inventories'].push(inventoryitem);
+                });
+                console.log(JSON.stringify(products));
+                resolve(products);
+            }).catch((err)=>{
+                console.log(err);
+                reject(err);
+            });            
+
+        })
+    },
     prepareForNavigation:(obj)=>{
         var products = JSON.parse(JSON.stringify(obj));
         _.map(products,function(product,index){
@@ -486,13 +582,10 @@ var ProductController = {
     
             var cartbuffervalue = new Buffer(cartvalue).toString("base64");
             products['cartvalue'] = cartbuffervalue;
-                
-
         });
-
         
         return products;             
-    },
+    },        
 
     getIndiaStates:()=>{
         return [

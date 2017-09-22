@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <%- include('shared/head',siteattributes:siteattributes) %>
+  <%- include('shared/head',{siteattributes:siteattributes}) %>
 
   <body class="fade-down">
-    <%- include('shared/topbar',siteattributes:siteattributes) %>
+    <%- include('shared/topbar',{siteattributes:siteattributes}) %>
     <%- include('shared/searchbar',{navigation:navigation,siteattributes:siteattributes}) %>
-    <%- include('shared/navbar',{navigation:navigation,siteattributes:siteattributes}); %>
+    <%- include('shared/navbar',{navigation:navigation,siteattributes:siteattributes}) %>
     <%- include('components/breadcrumb',{navPath:navPath,siteattributes:siteattributes}) %>
 
     <!-- Main Content -->
@@ -114,7 +114,7 @@
           <!-- End Checkout Form -->
         </div>  
     </div> 
-    <%- include('shared/footer') %>
+    <%- include('shared/footer',{siteattributes:siteattributes}) %>
     <%- include('shared/scripts') %>
   </body>
 </html>

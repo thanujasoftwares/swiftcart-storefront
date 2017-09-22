@@ -51,7 +51,7 @@
                 <ul class="pager">
                   <li class="previous"><a href="/"><span aria-hidden="true">&larr;</span> Continue Shopping</a></li>
                   <%
-                    if(customerId!=0){
+                    if(customerId && customerId!=0){
                   %>
                     <li class="next"><a href="/account/<%= customerId %>/checkout.html" >Checkout <span aria-hidden="true">&rarr;</span></a></li>
                   <%

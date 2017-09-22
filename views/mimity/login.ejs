@@ -119,6 +119,10 @@
 
     <%- include('shared/footer',{siteattributes:siteattributes}) %>
     <%- include('shared/scripts') %>
-
+    <script type="text/javascript">
+      $(document).ready(function(){
+        localStorage.removeItem('customer');
+      })
+    </script>
   </body>
 </html>

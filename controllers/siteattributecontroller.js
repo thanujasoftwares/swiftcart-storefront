@@ -35,7 +35,6 @@ var SiteAttributeController = {
                     case 'value9':options['value9']=value;break;
                 }
             });
-            console.log("i m at create");
             SiteAttributes.create(options).then((siteattribute)=>{
                 resolve(siteattribute);
             }).catch((err)=>{
@@ -55,11 +54,10 @@ var SiteAttributeController = {
                 _.map(attributes,(attribute)=>{
                     siteattributes[attribute.key]=JSON.parse(JSON.stringify(attribute));
                 });
-                console.log(siteattributes);
                 siteattributes['color']={
                     'id':-1,
                     'key':'color',
-                    'value0':'indigo'
+                    'value0':'teal'
                 };
                 resolve(siteattributes);
             }).catch((err) => {
@@ -115,8 +113,6 @@ var SiteAttributeController = {
                     case 'value9':options['value9']=value;break;
                 }
             });
-            console.log("i m at update");
-            console.log(options);
             SiteAttributes.update(options,{
                 where:{
                     id:id,

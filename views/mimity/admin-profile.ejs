@@ -19,6 +19,7 @@
             <ul class="nav nav-pills nav-stacked">
                 <li role="presentation" class="active"><a href="#profile-settings" data-toggle="tab"><i class="fa fa-user-circle"></i>&nbsp;Profile</a></li>
                 <li role="presentation"><a href="#site-settings" data-toggle="tab"><i class="fa fa-gears"></i>&nbsp;Site Settings</a></li>
+                <li role="presentation"><a href="#content-settings" data-toggle="tab"><i class="fa fa-gears"></i>&nbsp;Content Management</a></li>                
                 <li role="presentation"><a href="#share-settings" data-toggle="tab"><i class="fa fa-share"></i>&nbsp;Share</a></li>
                 <li role="presentation"><a href="#faq-settings" data-toggle="tab"><i class="fa fa-question-circle"></i>&nbsp;FAQ</a></li>
                 <li role="presentation" ><a href="#privacy-settings" data-toggle="tab"><i class="fa fa-user-secret"></i>&nbsp;Privacy Statement</a></li>
@@ -48,8 +49,20 @@
                       <strong>Phone Number</strong>
                       <p><%= customer.phonenumber %></p>
                     </li>
+                    <li class="list-group-item">
+                      <form action="/admin/settings.html" method="post" data-form='set'>
+                        <input type="hidden" value="passwd" name="key"/>
+                        <label> Update Password </label>
+                        <input class="form-control" type="text" placeholder="Current Password" value="" name="value0"/> <br />
+                        <div class="input-group">
+                          <input class="form-control" type="text" placeholder="New Password" value="" name="value1"/>
+                          <div class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">Update&nbsp;<i class='fa fa-circle-o-notch fa-spin hide' ></i></button>
+                          </div>
+                        </div>
+                      </form>
+                    </li>
                   </ul>
-                  <a href="#" class="btn btn-theme pull-right"><i class="fa fa-pencil"></i> Edit Profile</a>
                 </div>
               </div>
             </div>                  
@@ -100,6 +113,23 @@
                 <label> Contact Us Email Address </label>
                 <div class="input-group">
                   <input class="form-control" type="text" placeholder="Customer Care Email Address" value="<%= siteattributes.cceaddr.value0 || '' %>" name="value0"/>
+                  <div class="input-group-btn">
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+              </form>  
+              <br />
+              <form action="/admin/settings.html" method="post" data-form='set'>
+                <input type="hidden" value="noreply" name="key"/>
+                <label> Email Notification <small>this email address will used to send notifications to customers</small></label>
+                <div class="input-group">
+                  <input class="form-control" type="text" placeholder="email address" value="<%= siteattributes.cceaddr.value0 || '' %>" name="value0"/>
+                  <br />
+                  <input class="form-control" type="text" placeholder="pop3 server" value="<%= siteattributes.cceaddr.value2 || '' %>" name="value2"/>
+                  <br />
+                  <input class="form-control" type="text" placeholder="pop3 port number" value="<%= siteattributes.cceaddr.value2 || '' %>" name="value3"/>
+                  <br />
+                  <input class="form-control" type="text" placeholder="password" value="" name="value1"/>
                   <div class="input-group-btn">
                     <button class="btn btn-primary">Update</button>
                   </div>
@@ -344,9 +374,32 @@
                     <textarea class="form-control" placeholder="Paragraph 6" ><%= siteattributes.tncstmt.value5 || '' %></textarea><br />
                         <button class="btn btn-primary">Update</button>
                   </form>              
-                    
             </div>
-            
+            <div id="content-settings" class="tab-pane fade">
+                <div class="title m-b-2"><span><i class="fa fa-globe"></i>&nbsp;Dashboard</span></div>
+                <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                  <input type="hidden" value="homedash" name="key"/>
+                  <label> Images  </label>
+                  <input class="form-control" type="file" multiple placeholder="Website Logo" value="<%= siteattributes.homedash.value0 || '' %>" name="values"/> <br />
+                  <button class="btn btn-primary">Update</button>
+                </form>       
+                <br />       
+                <div class="title m-b-2"><span><i class="fa fa-eye"></i>&nbsp;Theme</span></div>
+                <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                  <input type="hidden" value="homedash" name="key"/>
+                  <label> Images  </label>
+                  <input class="form-control" type="file" multiple placeholder="Website Logo" value="<%= siteattributes.homedash.value0 || '' %>" name="values"/> <br />
+                  <button class="btn btn-primary">Update</button>
+                </form>              
+                <br />       
+                <div class="title m-b-2"><span><i class="fa fa-eye"></i>&nbsp;Limits</span></div>
+                <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                  <input type="hidden" value="homedash" name="key"/>
+                  <label> Images  </label>
+                  <input class="form-control" type="file" multiple placeholder="Website Logo" value="<%= siteattributes.homedash.value0 || '' %>" name="values"/> <br />
+                  <button class="btn btn-primary">Update</button>
+                </form>                
+            </div>            
           </div>
           <!-- End My Profile Content -->
         </div>
