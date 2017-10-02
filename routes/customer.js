@@ -77,9 +77,10 @@ function mapGender(gendergroup){
     gendergroup = gendergroup.toLowerCase();
     
     switch(gendergroup){
-        case 'female': gender='f'; break;
+        case 'women': gender='f'; break;
         case 'unisex': gender='u'; break;
-        case 'male': gender='m'; break;
+        case 'men': gender='m'; break;
+        case 'kids': gender='k'; break;
     }
 
     return gender;
@@ -109,9 +110,8 @@ router.route('/')
         whr = ' "Products"."isactive" = true and '
     }
     
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr+'"Products"."isfeatured"=true'), ProductController.getProducts(whr+'"Products"."isnew"=true'), ProductController.getProducts(whr+'"Products"."isbestseller"=true'), ProductController.getProducts(whr+'"Products"."isdeal"=true'), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),ProductController.getProducts(whr+'"Products"."isfeatured"=true'), ProductController.getProducts(whr+'"Products"."isnew"=true'), ProductController.getProducts(whr+'"Products"."isbestseller"=true'), ProductController.getProducts(whr+'"Products"."isdeal"=true'), SiteattributeController.getAll()])
     .then((data)=>{
-        console.log(data[5]);
         res.render('index',{
             'navigation':data[0],
             'featured':ProductController.prepareForNavigation(data[1]),
@@ -135,7 +135,7 @@ router.route('/index.html')
         whr = ' "Products"."isactive" = true and '
     }
     
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr+'"Products"."isfeatured"=true'), ProductController.getProducts(whr+'"Products"."isnew"=true'), ProductController.getProducts(whr+'"Products"."isbestseller"=true'), ProductController.getProducts(whr+'"Products"."isdeal"=true'),SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),ProductController.getProducts(whr+'"Products"."isfeatured"=true'), ProductController.getProducts(whr+'"Products"."isnew"=true'), ProductController.getProducts(whr+'"Products"."isbestseller"=true'), ProductController.getProducts(whr+'"Products"."isdeal"=true'),SiteattributeController.getAll()])
     .then((data)=>{
         res.render('index',{
             'navigation':data[0],
@@ -169,7 +169,7 @@ router.route('/:productgroup.html')
 
     whr += productgroup;
     
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),ProductController.getProducts(whr), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('products', {
             'navigation':data[0],
@@ -195,20 +195,20 @@ router.route('/:productgroup.html')
 router.route('/:agegrouptitle.html')
 .get(function(req,res,next){
     var age=undefined;
-    age=mapAgegroup(req.params.agegrouptitle);
+    age=mapGender(req.params.agegrouptitle);
     if(age == undefined){
         next();
         return;
     }
 
-    var whr = '"Products"."agegroup"=\''+age+'\'';
+    var whr = '"Products"."gender"=\''+age+'\'';
     if(req.session['ctype'] && req.session['ctype']=='a'){
         whr += ' and "Products"."isactive" in (true,false)';
     }else{
         whr += ' and "Products"."isactive" = true '
     }
 
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),ProductController.getProducts(whr), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('products', {
             'navigation':data[0],
@@ -234,7 +234,7 @@ router.route('/:agegrouptitle.html')
 router.route('/:agegrouptitle/:category\.(html)?')
 .get(function(req,res,next){
     var age=undefined;
-    age=mapAgegroup(req.params.agegrouptitle);
+    age=mapGender(req.params.agegrouptitle);
     if(age == undefined){
         next();
         return;
@@ -243,14 +243,14 @@ router.route('/:agegrouptitle/:category\.(html)?')
     var category=req.params.category.toLowerCase();
     
 
-    var whr = '"Products"."agegroup"=\''+age+'\' and lower("Products"."category") like \'%'+category+'%\' ';
+    var whr = '"Products"."gender"=\''+age+'\' and lower("Products"."category") like \'%'+category+'%\' ';
     if(req.session['ctype'] && req.session['ctype']=='a'){
         whr += ' and "Products"."isactive" in (true,false)';
     }else{
         whr += ' and "Products"."isactive" = true '
     }
     
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),ProductController.getProducts(whr), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('products', {
             'navigation':data[0],
@@ -284,20 +284,20 @@ router.route('/:agegrouptitle/:category/:subcategory\.(html)?')
     var category=req.params.category.toLowerCase();
     var subcategory=req.params.subcategory.toLowerCase();
     var age=undefined;
-    age=mapAgegroup(req.params.agegrouptitle);
+    age=mapGender(req.params.agegrouptitle);
     if(age == undefined){
         next();
         return;
     }
     
-    var whr = '"Products"."agegroup"=\''+age+'\' and lower("Products"."category") like \'%'+category+'%\' and lower("Products"."subcategory") like \'%'+subcategory+'%\' ';
+    var whr = '"Products"."gender"=\''+age+'\' and lower("Products"."category") like \'%'+category+'%\' and lower("Products"."subcategory") like \'%'+subcategory+'%\' ';
     if(req.session['ctype'] && req.session['ctype']=='a'){
         whr += ' and "Products"."isactive" in (true,false)';
     }else{
         whr += ' and "Products"."isactive" = true '
     }
 
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),ProductController.getProducts(whr), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('products', {
             'navigation':data[0],
@@ -330,22 +330,22 @@ router.route('/:agegrouptitle/:category/:subcategory\.(html)?')
     })
 });
 
-router.route('/:agegrouptitle/:category/:subcategory/:gendergroup\.(html)?')
+router.route('/:gendergroup/:category/:subcategory/:agegrouptitle\.(html)?')
 .get(function(req,res,next){
     var category=req.params.category.toLowerCase();
     var subcategory=req.params.subcategory.toLowerCase();
     var gendergroup=req.params.gendergroup.toLowerCase();
     
     var age=undefined;
-    var gender = undefined;
-    age=mapAgegroup(req.params.agegrouptitle);
-    if(age == undefined){
+    var gender= undefined;
+    gender=mapGender(req.params.gendergroup);
+    if(gender == undefined){
         next();
         return;
     }
     
-    gender=mapGender(req.params.gendergroup);
-
+    age=mapAgegroup(req.params.agegrouptitle);
+    console.log(age,gender);
     if(age == undefined || gender == undefined){
         next();
         return;
@@ -359,7 +359,7 @@ router.route('/:agegrouptitle/:category/:subcategory/:gendergroup\.(html)?')
     }
     
 
-    Promise.all([ProductController.getCategories(0),ProductController.getProducts(whr), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),ProductController.getProducts(whr), SiteattributeController.getAll()])
     .then((data)=>{
 
         data[1]=ProductController.prepareForNavigation(data[1]);
@@ -373,23 +373,23 @@ router.route('/:agegrouptitle/:category/:subcategory/:gendergroup\.(html)?')
                     active:false
                 },                
                 {
-                    title:req.params.agegrouptitle,
-                    url:'/'+req.params.agegrouptitle+'.html',
+                    title:req.params.gendergroup,
+                    url:'/'+req.params.gendergroup+'.html',
                     active:false
                 },
                 {
                     title:req.params.category,
-                    url:'/'+data[1][0].agegrouptitle+'/'+data[1][0].category+'.html',
+                    url:'/'+data[1][0].gendergroup+'/'+data[1][0].category+'.html',
                     active:false
                 },
                 {
                     title:req.params.subcategory,
-                    url:'/'+data[1][0].agegrouptitle+'/'+data[1][0].category+'/'+data[1][0].subcategory+'.html',
+                    url:'/'+data[1][0].gendergroup+'/'+data[1][0].category+'/'+data[1][0].subcategory+'.html',
                     active:false
                 },
                 {
-                    title:req.params.gendergroup,
-                    url:'/'+data[1][0].agegrouptitle+'/'+data[1][0].category+'/'+data[1][0].subcategory+'/'+data[1][0].gendergroup+'.html',
+                    title:req.params.agegrouptitle,
+                    url:'/'+data[1][0].gendergroup+'/'+data[1][0].category+'/'+data[1][0].subcategory+'/'+data[1][0].agegrouptitle+'.html',
                     active:true
                 }                
             ],
@@ -403,7 +403,7 @@ router.route('/:agegrouptitle/:category/:subcategory/:gendergroup\.(html)?')
 
 router.route('/:agegrouptitle/:category/:subcategory/:gendergroup/:id/:sku/:title.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0),getProduct(req.params.id,true), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),getProduct(req.params.id,true), SiteattributeController.getAll()])
     .then((data)=>{
         data[1]=ProductController.prepareForNavigation(data[1]);
         res.render('product',{
@@ -415,23 +415,23 @@ router.route('/:agegrouptitle/:category/:subcategory/:gendergroup/:id/:sku/:titl
                     active:false
                 },
                 {
-                    title:data[1][0].agegrouptitle,
-                    url:'/'+data[1][0].agegrouptitle+'.html',
+                    title:data[1][0].gendergroup,
+                    url:'/'+data[1][0].gendergroup+'.html',
                     active:false
                 },                                                
                 {
                     title:data[1][0].category,
-                    url:'/'+data[1][0].agegrouptitle+'/'+data[1][0].category+'.html',
+                    url:'/'+data[1][0].gendergroup+'/'+data[1][0].category+'.html',
                     active:false
                 },
                 {
                     title:data[1][0].subcategory,
-                    url:'/'+data[1][0].agegrouptitle+'/'+data[1][0].category+'/'+data[1][0].subcategory+'.html',
+                    url:'/'+data[1][0].gendergroup+'/'+data[1][0].category+'/'+data[1][0].subcategory+'.html',
                     active:false
                 },
                 {
-                    title:data[1][0].gendergroup,
-                    url:'/'+data[1][0].agegrouptitle+'/'+data[1][0].category+'/'+data[1][0].subcategory+'/'+data[1][0].gendergroup+'.html',
+                    title:data[1][0].agegrouptitle,
+                    url:'/'+data[1][0].gendergroup+'/'+data[1][0].category+'/'+data[1][0].subcategory+'/'+data[1][0].agegrouptitle+'.html',
                     active:false
                 },
                 {
@@ -451,7 +451,7 @@ router.route('/:agegrouptitle/:category/:subcategory/:gendergroup/:id/:sku/:titl
 
 router.route('/cart.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('cart',{
             'navigation':data[0],
@@ -489,7 +489,7 @@ router.route('/checkout.html')
 
 router.route('/thankyou.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('thankyou',{
             'navigation':data[0],
@@ -511,7 +511,7 @@ router.route('/thankyou.html')
 
 router.route('/faq.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('faq',{
             'navigation':data[0],
@@ -533,7 +533,7 @@ router.route('/faq.html')
 
 router.route('/privacy.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('privacy',{
             'navigation':data[0],
@@ -555,7 +555,7 @@ router.route('/privacy.html')
 
 router.route('/legal.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('legal',{
             'navigation':data[0],
@@ -578,7 +578,7 @@ router.route('/legal.html')
 
 router.route('/termsandconditions.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('tandc',{
             'navigation':data[0],
@@ -600,7 +600,7 @@ router.route('/termsandconditions.html')
 
 router.route('/login.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('login',{
             'navigation':data[0],
@@ -687,7 +687,7 @@ router.route('/login.html')
 
 router.route('/products/categories.json')
 .get(function(req,res){
-    ProductController.getCategories(0)    
+    ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a')    
     .then((data)=>{
         res.json({status:200,categories:data.categories,subcategories:data.subcategories,fabric:data.fabric});
     }).catch((err)=>{
@@ -699,7 +699,7 @@ router.route('/products/categories.json')
 
 router.route('/guest/login.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('login',{
             'navigation':data[0],
@@ -723,7 +723,7 @@ router.route('/guest/login.html')
 
 // router.route('/guest/login.html')
 // .get(function(req,res){
-//     Promise.all([ProductController.getCategories(0)])
+//     Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a')])
 //     .then((data)=>{
 //         res.render('login',{
 //             'navigation':data[0],
@@ -745,7 +745,7 @@ router.route('/guest/login.html')
 
 router.route('/guest/checkout.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
     .then((data)=>{
         var cid=0;
         if (req.session && req.session[req.sessionID]) {
@@ -772,7 +772,7 @@ router.route('/guest/checkout.html')
             'customerId':0,
             'states':ProductController.getIndiaStates(),
             // {key:'paytm', name:'PayTm'},{key:'actfr',name:'A/C Tranfer'},
-            'paytypes':[{key:'cod',name:'Cash On Delivery'}],
+            'paytypes':[{key:'paytm',name:'PayTM'},{key:'cod',name:'Cash On Delivery'}],
             'siteattributes':data[1]  
         });        
     })
@@ -780,7 +780,7 @@ router.route('/guest/checkout.html')
 
 router.route('/guest/orders/:orderid-:cid-:trackingnumber.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), CustomerController.getProfile(req.params.cid), OrderController.getOrder(req.params.cid,req.params.orderid), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), CustomerController.getProfile(req.params.cid), OrderController.getOrder(req.params.cid,req.params.orderid), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('invoice',{
             'navigation':data[0],
@@ -817,7 +817,7 @@ router.route('/account/:customerId/*')
         next();
     }
     else if (req.session[req.sessionID] == undefined  || req.session[req.sessionID]!= req.params.customerId) {
-        Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('login',{
                 'navigation':data[0],
@@ -847,7 +847,7 @@ router.route('/account/:customerId/checkout.html')
     if (req.session[req.sessionID] == undefined  || req.session[req.sessionID]!= req.params.customerId) {
         res.render('404');
     }else{
-        Promise.all([ProductController.getCategories(0),CustomerController.getProfile(req.params.customerId), CustomerController.getAddressBook(req.params.customerId), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),CustomerController.getProfile(req.params.customerId), CustomerController.getAddressBook(req.params.customerId), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('account-checkout',{
                 'navigation':data[0],
@@ -872,7 +872,7 @@ router.route('/account/:customerId/checkout.html')
                 'customeraddressbooks':data[2],
                 'states':ProductController.getIndiaStates(),
                 //{key:'paytm', name:'PayTm'},{key:'actfr',name:'A/C Tranfer'},
-                'paytypes':[{key:'cod',name:'Cash On Delivery'}],
+                'paytypes':[{key:'paytm',name:'PayTM'},{key:'cod',name:'Cash On Delivery'}],
                 'siteattributes':data[3]
             });        
         })
@@ -882,7 +882,7 @@ router.route('/account/:customerId/checkout.html')
 router.route('/account/:customerid/profile.html')
 .get(function(req,res){
     if (req.session && req.session[req.sessionID] && (req.session[req.sessionID]==req.params.customerid || req.session['ctype']=='a')) {
-        Promise.all([ProductController.getCategories(0),CustomerController.getProfile(req.params.customerid), CustomerController.getAddressBook(req.params.customerid), CustomerController.getOrder(req.params.customerid), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),CustomerController.getProfile(req.params.customerid), CustomerController.getAddressBook(req.params.customerid), CustomerController.getOrder(req.params.customerid), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('account-profile',{
                 'navigation':data[0],
@@ -910,7 +910,7 @@ router.route('/account/:customerid/profile.html')
             res.status(404).render('404');
         })
     }else{
-        Promise.all([ProductController.getCategories(0)])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a')])
         .then((data)=>{
             res.render('login',{
                 'navigation':data[0],
@@ -949,7 +949,7 @@ router.route('/account/:customerid/address.html')
 
 router.route('/account/:customerid/orders/:orderid-:cid-:trackingnumber.html')
 .get(function(req,res){
-        Promise.all([ProductController.getCategories(0), CustomerController.getProfile(req.params.customerid), OrderController.getOrder(req.params.customerid,req.params.orderid), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), CustomerController.getProfile(req.params.customerid), OrderController.getOrder(req.params.customerid,req.params.orderid), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('invoice',{
                 'navigation':data[0],
@@ -996,7 +996,7 @@ router.route('/admin/*')
         next();
         return;
     }else{
-        Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('login',{
                 'navigation':data[0],
@@ -1020,7 +1020,7 @@ router.route('/admin/*')
 
 router.route('/admin/settings.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0),CustomerController.getProfile(req.session[req.sessionID]), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),CustomerController.getProfile(req.session[req.sessionID]), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('admin-profile',{
             'navigation':data[0],
@@ -1057,10 +1057,27 @@ router.route('/admin/settings.html')
             var key =  undefined;
             var value1 = undefined;
             var refid = undefined;
+            var ismultiple = undefined;
+            var promises=[];
             form.parse(req, function(err, fields, files) {
                 key = fields.key || undefined;
                 refid = fields.refid || undefined;
                 value1 = undefined;
+                ismultiple = fields.ismultiple || undefined;
+
+                if(_.isArray(key)){
+                    key = key[0]
+                }
+
+                if(_.isArray(refid)){
+                    refid = refid[0]
+                }
+
+                if(_.isArray(ismultiple)){
+                    ismultiple = ismultiple[0]
+                }
+                
+
                 Object.keys(files).forEach(function(name) {
                   value1 = files[name][0]['path'];
                   var path = value1.slice(0,value1.lastIndexOf('.'));
@@ -1078,27 +1095,25 @@ router.route('/admin/settings.html')
                       req.body={
                           'key':key,
                           'value0':path+'-'+size+ext,
-                          'refid':refid
+                          'refid':refid,
+                          'ismultiple':ismultiple
                       };
-  
-                      key = req.body.key || undefined;
-                      
-                      if(key){
-                          SiteattributeController.get(key)
-                          .then((siteattribute) =>{
-                              SiteattributeController.update(siteattribute.id, siteattribute.key, req.body)
-                              .then((attribute)=>{
-                                  res.json({status:200, refid: req.body.refid});
-                              })
-                          }).catch((err)=>{
-                              SiteattributeController.create(req.body)
-                              .then((data)=>{
-                                  res.json({status:200, refid:req.body.refid||""})
-                              }).catch((err)=>{
-                                  console.log(err);
-                                  res.json({status:500, refid:req.body.refid||""})
-                              })
-                          })
+                    if(key){
+                        SiteattributeController.get(key)
+                        .then((siteattribute) =>{
+                            SiteattributeController.update(siteattribute.id, siteattribute.key, req.body)
+                            .then((attribute)=>{
+                                res.json({status:200, refid: req.body.refid});
+                            })
+                        }).catch((err)=>{
+                            SiteattributeController.create(req.body)
+                            .then((data)=>{
+                                res.json({status:200, refid:req.body.refid||""})
+                            }).catch((err)=>{
+                                console.log(err);
+                                res.json({status:500, refid:req.body.refid||""})
+                            })
+                        })
                       }else{
                           res.json({status:500, refid:req.body.refid||""})
                       }
@@ -1156,7 +1171,7 @@ router.route('/admin/settings.html')
 
 router.route('/admin/orders.html')
 .get(function(req,res){
-        Promise.all([ProductController.getCategories(0),CustomerController.getProfile(req.session[req.sessionID]), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),CustomerController.getProfile(req.session[req.sessionID]), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('admin-orders',{
                 'navigation':data[0],
@@ -1205,7 +1220,7 @@ router.route('/admin/orders.json')
 
 router.route('/admin/orders/:orderid-:cid-:trackingnumber.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0), CustomerController.getProfile(req.params.cid), OrderController.getOrder(req.params.cid,req.params.orderid), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), CustomerController.getProfile(req.params.cid), OrderController.getOrder(req.params.cid,req.params.orderid), SiteattributeController.getAll()])
     .then((data)=>{
         res.render('invoice',{
             'navigation':data[0],
@@ -1286,7 +1301,7 @@ router.route('/admin/orders/:orderid/shipping.html')
 
 router.route('/admin/customers.html')
 .get(function(req,res){
-        Promise.all([ProductController.getCategories(0),CustomerController.getProfile(req.session[req.sessionID]), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),CustomerController.getProfile(req.session[req.sessionID]), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('admin-customers',{
                 'navigation':data[0],
@@ -1336,7 +1351,7 @@ router.route('/admin/customers.json')
 
 router.route('/admin/product/new.html')
 .get(function(req,res){
-        Promise.all([ProductController.getCategories(0), SiteattributeController.getAll()])
+        Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'), SiteattributeController.getAll()])
         .then((data)=>{
             res.render('newproduct',{
                 'navigation':data[0],
@@ -1379,7 +1394,7 @@ router.route('/admin/product/new.html')
 
 router.route('/admin/product/:id/edit.html')
 .get(function(req,res){
-    Promise.all([ProductController.getCategories(0),getProduct(req.params.id,true), SiteattributeController.getAll()])
+    Promise.all([ProductController.getCategoriesByGenderGroup(0,req.session['ctype']!='a'),getProduct(req.params.id,true), SiteattributeController.getAll()])
     .then((data)=>{
         data[1]=ProductController.prepareForNavigation(data[1]);
         res.render('editproduct',{

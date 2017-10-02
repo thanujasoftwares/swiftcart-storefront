@@ -288,8 +288,113 @@ var ProductController = {
             })
         })
     }, 
+    'getCategoriesByGenderGroup':(VendorId,isactiveonly) => {
+        return new Promise((resolve,reject)=>{
+            Products.getCategoriesByGenderGroup(VendorId,isactiveonly).then((menuitems)=>{
+                // resolve(categories);
+                var uniqCat = [];
+                var uniqSub = [];
+                var gendergroup=['m','f','k','u'];
+                var menu=[];
+                _.map(gendergroup,(gender,index)=>{
+                    var prevCat = "";
+                    var prevCatInd=-1;
+                    var nav=[];
+                    _.map(menuitems,function(item,index){
+                        item.gender=item.gender.trim();
+                        if(item.gender==gender){
+                            uniqCat.push(item.category);
+                            uniqSub.push(item.subcategory);
 
-    'getCategories':(VendorId) => {
+                            item.category = (item.category.trim()).toLowerCase();
+                            item.subcategory = (item.category.trim()).toLowerCase();
+                            
+                            item.category = item.category.charAt(0).toUpperCase() + item.category.slice(1)
+                            item.subcategory = item.subcategory.charAt(0).toUpperCase() + item.subcategory.slice(1)
+                            
+                            var chkCatInd = -1;
+                            var chkCatSubInd = -1;
+                            _.forEach(nav,(navitem,index)=>{
+                                if(item.category == navitem.category){
+                                    chkCatInd = index;
+                                   _.forEach(navitem.subcategory,(subitem,sindex)=>{
+                                       if(subitem == item.subcategory){
+                                        chkCatSubInd == sindex;
+                                       }
+                                   }) 
+                                }
+                            })
+
+                            if(chkCatInd == -1 && chkCatSubInd == -1){
+                                nav.push({category:item.category,subcategory:[]});
+                                var l = (nav.length - 1);
+                                nav[l]['subcategory'].push(item.subcategory);
+                            }else if(chkCatInd >= 0 && chkCatSubInd == -1){
+                                nav[chkCatInd]['subcategory'].push(item.subcategory);
+                            }
+
+                        }
+                    });
+
+                    switch(gender){
+                        case 'm': gender='Men'; break;
+                        case 'f': gender='Women'; break;
+                        case 'k': gender='Kids'; break;
+                        case 'u': gender='Unisex'; break;
+                    }
+                    menu.push({
+                        'group':gender,
+                        'groupitems':nav
+                    });
+                });
+
+                var fabric=['cotton','silk','linen','wool','leather','ramie','hemp','jute','acetate','chiffon','acrylic','organza',
+                'lastex','nylon','velvet','polyester','taffeta','denim','rayon','spandex','georgette','viscose','grey fabric',
+                'polypropylene','satin','industrial','fiberglass','filter','carbon','vinyl','plain','blended','crewel','kashmir',
+                'stretch','reflective','quilted','polyethylene','narrow','laminated','flocked','fire resistant','water resistant','corduroy',
+                'velvet','egyptian cotton','knit','memory foam','microfiber','fleece','micro fleece','polyester','stretch','spandex'
+                ];
+                            
+
+                uniqCat = _.uniq(uniqCat);
+                uniqSub = _.uniq(uniqSub);
+                // success = myCache.set("navigation", {
+                //     categories: uniqCat,
+                //     subcategories:uniqSub,
+                //     menu:menu
+                // }, 10000 );
+                resolve({
+                    categories: uniqCat,
+                    subcategories:uniqSub,
+                    menu:menu,
+                    fabric:fabric,
+                    age:{
+                        'n':'NewBorn',
+                        'i':'Infant',
+                        't':'Teens',
+                        'k':'Kids',
+                        'y':'Young',
+                        'a':'Adult',
+                        's':'Seniors'
+                    }
+                });
+            })
+            .catch((err)=>{
+                console.log("Error while storing navigation");
+                console.log(err);
+                reject("system error");
+            }); 
+            // try{
+            //     var menu = myCache.get( "navigation", true ); 
+            //     resolve(menu);       
+            // }catch(err){
+            // }                
+            // }).catch((err)=>{
+            //     reject(err);
+            // })
+        });        
+    },
+    'getCategoriesByAgeGroup':(VendorId) => {
         return new Promise((resolve,reject)=>{
             Products.getCategories(VendorId).then((menuitems)=>{
                 // resolve(categories);
@@ -506,9 +611,10 @@ var ProductController = {
                 }
                 products[index]['agegroup']=product.agegroup;
                 switch(product.gender){
-                    case 'f': products[index]['gendergroup']='female'; break;
+                    case 'f': products[index]['gendergroup']='women'; break;
                     case 'u': products[index]['gendergroup']='unisex'; break;
-                    case 'm': products[index]['gendergroup']='male'; break;
+                    case 'k': products[index]['gendergroup']='kids'; break;
+                    case 'm': products[index]['gendergroup']='men'; break;
                 }
                 products[index]['agegroup']=product.agegroup;
                 if(product['Inventories'] && product['Inventories'].length > 0){
@@ -525,7 +631,6 @@ var ProductController = {
                     products[ProductIndex]['Inventories'] = [];
                     products[ProductIndex]['Inventories'].push(inventoryitem);
                 });
-                console.log(JSON.stringify(products));
                 resolve(products);
             }).catch((err)=>{
                 console.log(err);
@@ -549,10 +654,11 @@ var ProductController = {
             }
             products[index]['agegroup']=product.agegroup;
             switch(product.gender){
-                case 'f': products[index]['gendergroup']='female'; break;
-                case 'u': products[index]['gendergroup']='unisex'; break;
-                case 'm': products[index]['gendergroup']='male'; break;
-            }
+                case 'f': products[index]['gendergroup']='Women'; break;
+                case 'u': products[index]['gendergroup']='Unisex'; break;
+                case 'k': products[index]['gendergroup']='Kids'; break;
+                case 'm': products[index]['gendergroup']='Men'; break;
+        }
             products[index]['agegroup']=product.agegroup;
 
             var inventory = [];

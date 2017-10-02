@@ -96,7 +96,7 @@ var Product = sequelize.define('Products',
         },
         gender:{
             allowNull: false,  
-            type: DataTypes.ENUM('m','f','u')
+            type: DataTypes.ENUM('m','f','u','k')
         }, 
         agegroup:{
             allowNull: false,  
@@ -172,13 +172,32 @@ Product.getColumns = () => {
 
 // /* Class Methods */
 
-Product.getCategories = (VendorId) => {
+Product.getCategoriesByAgeGroup = (VendorId) => {
     return new Promise(function(resolve,reject){
         sequelize.query('SELECT DISTINCT "agegroup","category", "subcategory" FROM "Products" where "isdeleted"=false and "VendorId"='+VendorId+" ORDER BY 1,2,3 ", {type: sequelize.QueryTypes.SELECT}).then((data) => {
             resolve(data);
         }).catch((err)=>{
             reject(err);
         });
+    });    
+}
+
+Product.getCategoriesByGenderGroup = (VendorId,isactive) => {
+    return new Promise(function(resolve,reject){
+        if(isactive){
+            sequelize.query('SELECT DISTINCT "gender","category", "subcategory" FROM "Products" where "isdeleted"=false and "isactive" = true and "VendorId"='+VendorId+" ORDER BY 1,2,3 ", {type: sequelize.QueryTypes.SELECT}).then((data) => {
+                resolve(data);
+            }).catch((err)=>{
+                reject(err);
+            });
+    
+        }else{
+            sequelize.query('SELECT DISTINCT "gender","category", "subcategory" FROM "Products" where "isdeleted"=false and "VendorId"='+VendorId+" ORDER BY 1,2,3 ", {type: sequelize.QueryTypes.SELECT}).then((data) => {
+                resolve(data);
+            }).catch((err)=>{
+                reject(err);
+            });
+        }
     });    
 }
 

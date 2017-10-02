@@ -35,9 +35,11 @@
         <% if(featured.length>0) { %>
           <div class="col-md-9">
                 <div class="title"><span>Featured</span></div>
+                <div class="product-slider owl-carousel owl-theme owl-controls-top-offset">
                 <% featured.forEach(function(product){ %>
-                <%- include('components/tile',{tileClass:"col-xs-6 col-sm-4 col-lg-3",product:product, llabel:'f', rlabel:''}) %>
+                <%- include('components/tile',{tileClass:"",product:product, llabel:'f', rlabel:''}) %>
                 <% }) %>
+                </div>
           </div>
           <div class="clearfix visible-sm visible-xs"></div>
           <% } %>
@@ -45,9 +47,11 @@
           <% if(deal.length>0) { %>
             <div class="col-md-9">
                   <div class="title"><span>Deals</span></div>
-                  <% deal.forEach(function(product){ %>
-                  <%- include('components/tile',{tileClass:"col-xs-6 col-sm-4 col-lg-3",product:product, llabel:'d', rlabel:''}) %>
-                  <% }) %>
+                  <div class="product-slider owl-carousel owl-theme owl-controls-top-offset">
+                    <% deal.forEach(function(product){ %>
+                    <%- include('components/tile',{tileClass:"",product:product, llabel:'d', rlabel:''}) %>
+                    <% }) %>
+                  </div>
             </div>
             <div class="clearfix visible-sm visible-xs"></div>
             <% } %>

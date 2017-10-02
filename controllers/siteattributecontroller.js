@@ -52,7 +52,16 @@ var SiteAttributeController = {
             }).then((attributes) => {
                 var siteattributes={}
                 _.map(attributes,(attribute)=>{
-                    siteattributes[attribute.key]=JSON.parse(JSON.stringify(attribute));
+                    if(_.isEmpty(siteattributes[attribute.key])){
+                        siteattributes[attribute.key]=JSON.parse(JSON.stringify(attribute));
+                    }else if(_.isArray(siteattributes[attribute.key])){
+                        siteattributes[attribute.key].push(JSON.parse(JSON.stringify(attribute)));
+                    }else {
+                        var pValue=siteattributes[attribute.key]
+                        siteattributes[attribute.key]=[];
+                        siteattributes[attribute.key].push(pValue);
+                        siteattributes[attribute.key].push(JSON.parse(JSON.stringify(attribute)));
+                    }
                 });
                 siteattributes['color']={
                     'id':-1,

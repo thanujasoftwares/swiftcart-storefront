@@ -106,7 +106,7 @@
                     <input type="hidden" value="<%= item.size %>" data-cart-attribute='size'/>
                     <input type="hidden" value='<%= product.sku %>' data-cart-attribute='sku'/>
                     <input type="hidden" value="<%= item.unitprice - (item.unitprice * item.discount*0.01) %>" id="prd-price" data-cart-attribute='price'/>
-                    <input type="hidden" value="1" id="prd-quantity" data-cart-attribute='qty'/>
+                    <input type="hidden" value="1" />
                     <input type="hidden" value='<%= product.id %>' id="prd-pid" data-cart-attribute='pid'/>
                     <input type="hidden" value='<%= product.name %>' id="prd-name" data-cart-attribute='name'/>
                     <% if (product.ProductImages && product.ProductImages.length>0) { %>
@@ -130,9 +130,7 @@
                     <tr>
                       <td>Quantity</td>
                       <td>
-                          <div class="input-qty" >
-                            <input type="text" value="1" class="form-control text-center" name="quantity" />
-                          </div>
+                          <input type="text" value="1" class="form-control text-center" name="quantity" id="prd-qty" data-cart-attribute='qty'/>
                       </td>
                     </tr>
                     <tr>
@@ -201,8 +199,9 @@
                       <tr>
                         <td class="col-md-2">Gender</td>
                         <td>
-                          <%= product.gender=='m' ? 'Male' :'' %>
-                          <%= product.gender=='f' ? 'Female' :'' %>
+                          <%= product.gender=='m' ? 'Men' :'' %>
+                          <%= product.gender=='f' ? 'Women' :'' %>
+                          <%= product.gender=='k' ? 'Kids' :'' %>
                           <%= product.gender=='u' ? 'Unisex' :'' %>
                         </td>
                       </tr>
@@ -470,7 +469,6 @@
           }
 
           $(document).ready(function(){
-
 
             $("button[data-toggle]").each(function(){
               var target=$(this).attr("data-toggle");   

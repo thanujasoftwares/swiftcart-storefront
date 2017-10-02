@@ -45,9 +45,8 @@ jQuery(document).ready(function($){
                 var invid=0;
                 
                 var sel = "#"+$(this).attr("data-form");
-                $(sel).children("[data-cart-attribute]").each((index,element)=>{
+                $(sel).find("[data-cart-attribute]").each((index,element)=>{
                     var attrvalue=$(element).attr("data-cart-attribute");
-                    console.log(element);
                     attrvalue=attrvalue.trim();
                     switch(attrvalue){
                         case 'qty': qty = parseFloat($(element).val()) || 1; break;
@@ -65,7 +64,7 @@ jQuery(document).ready(function($){
                 });
 
                 var innerCartHTML='<div class="media" id="c-chk-'+sku+'-'+size+'"><div class="media-left"><a href="'+url+'"><img class="media-object img-thumbnail" src="'+img+'" width="50" alt="product"></a></div>';
-                innerCartHTML +='<div class="media-body"><a href="'+url+' class="media-heading">'+name+'</a><div>Size: <span cart-checkout-attribute="size">'+size+'</span> Qty: <span cart-checkout-attribute="qty">'+qty+'</span> Price: <span cart-checkout-attribute="price">'+(price*qty).toFixed(2)+'</span></div></div>';
+                innerCartHTML +='<div class="media-body"><a href="'+url+'" class="media-heading">'+name+'</a><div>Size: <span cart-checkout-attribute="size">'+size+'</span> Qty: <span cart-checkout-attribute="qty">'+qty+'</span> Price: <span cart-checkout-attribute="price">'+(price*qty).toFixed(2)+'</span></div></div>';
                 innerCartHTML +='<div class="media-right"><a href="javascript:removeItemFromCart(\'#c-chk-'+sku+'-'+size+'\');" data-toggle="tooltip" title="Remove"><i class="fa fa-remove"></i></a></div></div>';
 
                 chkEle=$('#c-chk-'+sku+'-'+size);
@@ -102,40 +101,12 @@ jQuery(document).ready(function($){
         if(key.indexOf('#c-chk-') == 0){
              var {qty,img,url,name,price,sku,size} = JSON.parse(localStorage.getItem(key));
              var innerCartHTML='<div class="media" id="c-chk-'+sku+'-'+size+'"><div class="media-left"><a href="'+url+'"><img class="media-object img-thumbnail" src="'+img+'" width="50" alt="product"></a></div>';
-             innerCartHTML +='<div class="media-body"><a href="'+url+' class="media-heading">'+name+'</a><div>Size: <span>'+size+'</span> Qty: <span>'+qty+'</span> Price: <span>'+(price*qty).toFixed(2)+'</span></div></div>';
+             innerCartHTML +='<div class="media-body"><a href="'+url+'" class="media-heading">'+name+'</a><div>Size: <span>'+size+'</span> Qty: <span>'+qty+'</span> Price: <span>'+(price*qty).toFixed(2)+'</span></div></div>';
              innerCartHTML +='<div class="media-right"><a href="javascript:removeItemFromCart(\'#c-chk-'+sku+'-'+size+'\');" data-toggle="tooltip" title="Remove"><i class="fa fa-remove"></i></a></div></div>';
              $(innerCartHTML).appendTo('#cart-checkout-items-placeholder');
          }
      }
      $('[cart-checkout-attributes="cnt"]').text($("#cart-checkout-items-placeholder .media").length);  
-
-     var stotal=0;
-     var gst=localStorage.getItem('gst') || '0.05';
-     var ctotal=0.00;
-     var dctotal = 0;
-     for ( var i = 0, len = localStorage.length; i < len; ++i ) {
-        key=localStorage.key( i );
-        if(key.indexOf('#c-chk-') == 0){
-             var {qty,img,url,name,price,sku,size} = JSON.parse(localStorage.getItem(key));
-             var innerCartHTML='<tr id="c-chk-'+sku+'-'+size+'-tr"><td class="img-cart"><a href="'+url+'"><img class="img-thumbnail" src="'+img+'" alt="product"></a></td>';
-             innerCartHTML +='<td><p><a href="'+url+'" class="d-block">'+name+'</a></p></td><td>'+size+'</td><td>'+qty+'</td><td class="unit">'+(price).toFixed(2)+'</td><td class="sub">'+(price*qty).toFixed(2)+'</td>';
-             innerCartHTML +='<td class="action"><a href="javascript:removeItemFromCart(\'#c-chk-'+sku+'-'+size+'\');" class="text-danger" data-toggle="tooltip" data-placement="top" data-original-title="Remove"><i class="fa fa-trash-o"></i></a></td></tr>';
-             $(innerCartHTML).appendTo('#shop-cart-table-rows');
-             var innerCartHTML2='<tr id="c-chk-'+sku+'-'+size+'-tr"><td class="img-cart"><a href="'+url+'"><img class="img-thumbnail" src="'+img+'" alt="product"></a></td>';
-             innerCartHTML2 +='<td><p><a href="'+url+'" class="d-block">'+name+'</a></p></td><td>'+size+'</td><td>'+qty+'</td><td class="unit">'+(price).toFixed(2)+'</td><td class="sub">'+(price*qty).toFixed(2)+'</td>';
-             innerCartHTML2 +='</tr>';
-             $(innerCartHTML2).appendTo('#shop-chkout-table-rows');
-             
-             stotal += (price*qty);
-         }
-     }
-
-     ctotal = stotal + (stotal * gst);
-     $('#shop-cart-table-st').text(stotal.toFixed(2));
-     $('#shop-cart-table-gst').text((stotal * gst).toFixed(2));
-     $('#shop-cart-table-dc').text(dctotal.toFixed(2));
-     $('#shop-cart-table-tt').text(ctotal.toFixed(2));
-
      
      $("form[data-form='login']").on("submit",function(event){
          event.preventDefault();

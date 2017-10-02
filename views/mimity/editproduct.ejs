@@ -52,13 +52,16 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-sm-2 control-label">Gender</label>
+                        <label class="col-sm-2 control-label">Product Group</label>
                         <div class="radio col-sm-10">
                             <label>
-                                    <input class="show" type="radio" name="gender" value="m" <%= product.gender=='m' ? 'checked' : '' %> > Male &nbsp;
+                                    <input class="show" type="radio" name="gender" value="m" <%= product.gender=='m' ? 'checked' : '' %> > Men &nbsp;
                             </label>
                             <label>
-                                    <input class="show" type="radio" name="gender" value="f" <%= product.gender=='f' ? 'checked' : '' %> > Female &nbsp;
+                                    <input class="show" type="radio" name="gender" value="f" <%= product.gender=='f' ? 'checked' : '' %> > Women &nbsp;
+                            </label>
+                            <label>
+                                    <input class="show" type="radio" name="gender" value="k" <%= product.gender=='k' ? 'checked' : '' %> > Kids &nbsp;
                             </label>
                             <label>
                                     <input class="show" type="radio" name="gender" value="u" <%= product.gender=='u' ? 'checked' : '' %> > Unisex &nbsp;

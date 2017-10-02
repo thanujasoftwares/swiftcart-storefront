@@ -4,6 +4,7 @@ var _ = require("lodash");
 var {Orders,OrderItems, OrderAddressBooks, Products, ProductImages, CustomerAddressBooks, OrderShipments} = require('../models');
 var redis = require('redis');
 var rc = new redis.createClient();
+const confirmOrderPublisher = require("redis").createClient();
 
 var OrderController = {
     _mapValuesToOrder:(values) =>{
@@ -141,6 +142,7 @@ var OrderController = {
                 }));
 
                 Promise.all(oitems).then((orditms)=>{
+                    confirmOrderPublisher.publish("send:orderconfirm",order.id+'-'+order.CustomerId+'-'+order.TrackingNumber+'-'+customer.email);
                     resolve({
                         order:order,
                         customer:customer,

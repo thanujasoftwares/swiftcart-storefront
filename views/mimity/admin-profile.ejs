@@ -376,29 +376,54 @@
                   </form>              
             </div>
             <div id="content-settings" class="tab-pane fade">
-                <div class="title m-b-2"><span><i class="fa fa-globe"></i>&nbsp;Dashboard</span></div>
-                <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
-                  <input type="hidden" value="homedash" name="key"/>
-                  <label> Images  </label>
-                  <input class="form-control" type="file" multiple placeholder="Website Logo" value="<%= siteattributes.homedash.value0 || '' %>" name="values"/> <br />
-                  <button class="btn btn-primary">Update</button>
-                </form>       
-                <br />       
-                <div class="title m-b-2"><span><i class="fa fa-eye"></i>&nbsp;Theme</span></div>
-                <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
-                  <input type="hidden" value="homedash" name="key"/>
-                  <label> Images  </label>
-                  <input class="form-control" type="file" multiple placeholder="Website Logo" value="<%= siteattributes.homedash.value0 || '' %>" name="values"/> <br />
-                  <button class="btn btn-primary">Update</button>
-                </form>              
-                <br />       
-                <div class="title m-b-2"><span><i class="fa fa-eye"></i>&nbsp;Limits</span></div>
-                <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
-                  <input type="hidden" value="homedash" name="key"/>
-                  <label> Images  </label>
-                  <input class="form-control" type="file" multiple placeholder="Website Logo" value="<%= siteattributes.homedash.value0 || '' %>" name="values"/> <br />
-                  <button class="btn btn-primary">Update</button>
-                </form>                
+                <div class="title m-b-2"><span><i class="fa fa-globe"></i>&nbsp;Promotions</span></div>
+
+                <div class="row">
+                  <div class="col col-md-3">
+                    <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                      <input type="hidden" value="homedash1" name="key"/>
+                      <label> <img  alt="Dashboard" src='/<%= siteattributes.homedash1.value0 || "images/no_image_dash.gif" %>' class="img-responsive"/>  </label>
+                        <input class="form-control" type="file" placeholder="Dashboard" value="<%= siteattributes.homedash1.value0 || '' %>" name="value0" />
+                        <br />
+                        <button class="btn btn-primary">Update</button>
+                        <button class="btn btn-warning">Reset</button>
+                    </form>       
+                  </div>
+                  <div class="col col-md-3">
+                      <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                        <input type="hidden" value="homedash2" name="key"/>
+                        <label> <img  alt="Dashboard" src='/<%= siteattributes.homedash2.value0 || "images/no_image_dash.gif" %>' class="img-responsive"/>  </label>
+                          <input class="form-control" type="file" placeholder="Dashboard" value="<%= siteattributes.homedash2.value0 || '' %>" name="value0" />
+                          <br />
+                          <button class="btn btn-primary">Update</button>
+                          <button class="btn btn-warning">Reset</button>
+                        </form>       
+                    </div>
+                  <div class="col col-md-3">
+                    <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                      <input type="hidden" value="homedash3" name="key"/>
+                      <label> <img  alt="Dashboard" src='/<%= siteattributes.homedash3.value0 || "images/no_image_dash.gif" %>' class="img-responsive"/>  </label>
+                        <input class="form-control" type="file" placeholder="Dashboard" value="<%= siteattributes.homedash3.value0 || '' %>" name="value0" />
+                        <br />
+                        <button class="btn btn-primary">Update</button>
+                        <button class="btn btn-warning">Reset</button>
+                      </form>       
+                  </div>
+
+                  <div class="col col-md-3">
+                      <form action="/admin/settings.html" method="post" enctype="multipart/form-data" data-form='set'>
+                        <input type="hidden" value="homedash4" name="key"/>
+                        <label> <img  alt="Dashboard" src='/<%= siteattributes.homedash4.value0 || "images/no_image_dash.gif" %>' class="img-responsive"/>  </label>
+                          <input class="form-control" type="file" placeholder="Dashboard" value="<%= siteattributes.homedash4.value0 || '' %>" name="value0" />
+                          <br />
+                          <button class="btn btn-primary">Update</button>
+                          <button class="btn btn-warning">Reset</button>
+                        </form>       
+                    </div>
+                    
+
+                  
+                </div>
             </div>            
           </div>
           <!-- End My Profile Content -->

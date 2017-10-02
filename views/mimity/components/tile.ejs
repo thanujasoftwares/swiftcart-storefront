@@ -1,11 +1,11 @@
 <div class='<%= tileClass %> box-product-outer'>
     <div class="box-product">
         <div class="img-wrapper">
-            <a style="height:240px;vertical-align:middle" href='/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html'>
+            <a style="height:240px;vertical-align:middle" href='/<%= product.gendergroup %>/<%= product.category %>/<%= product.subcategory %>/<%= product.agegrouptitle %>/<%= product.id %>/any/<%= product.name %>.html'>
                 <% if (product.imagepath){ %>
-                <img  alt="<%= product.name %>" src='<%= product.imagepath %><%= product.lg %>'>
+                <img  alt="<%= product.name %>" src='<%= product.imagepath %><%= product.lg %>' class="img-responsive"/>
                 <% } else { %>
-                <img  alt="<%= product.name %>" src='images/demo/polo1.jpg'>
+                <img  alt="<%= product.name %>" src='images/no_image_dash.gif' class="img-responsive">
                 <% }%>
             </a>
             <div class="tags">
@@ -26,7 +26,7 @@
                 <span class="label-tags"><span class="label label-primary arrowed-right"><%= product.agegrouptitle %></span></span>
             </div>
         </div>
-        <h6 style="height:60px;overflow-y:hidden;"><a href='/<%= product.agegrouptitle %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html' title="<%= product.name %>"><%= product.name %></a></h6>
+        <h6 style="height:60px;overflow-y:hidden;"><a href='/<%= product.gendergroup %>/<%= product.category %>/<%= product.subcategory %>/<%= product.gendergroup %>/<%= product.id %>/any/<%= product.name %>.html' title="<%= product.name %>"><%= product.name %></a></h6>
         <div class="price">
         <%
         if(product.discount>0){

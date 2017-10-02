@@ -107,14 +107,14 @@
                           <td colspan="4" class="text-right">Sub total</td>
                           <td colspan="2"><b><%= order.totalprice.toFixed(2) %></b></td>
                       </tr>                
-                      <tr>
+                      <!-- <tr>
                           <td colspan="4" class="text-right">GST</td>
                           <td colspan="2"><b><%= (order.totalprice * order.tax).toFixed(2) %></b></td>
                       </tr>                
                       <tr>
                           <td colspan="4" class="text-right">Shipping Charges</td>
                           <td colspan="2"><b><%= order.shippingprice.toFixed(2) %></b></td>
-                      </tr>                
+                      </tr>                 -->
                       <tr>
                           <td colspan="4" class="text-right">Total</td>
                           <td colspan="2"><b><%= (order.totalprice + order.totalprice * order.tax + order.shippingprice).toFixed(2) %></b></td>
